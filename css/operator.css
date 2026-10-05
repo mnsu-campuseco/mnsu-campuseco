@@ -1,3 +1,72 @@
-/* operator.css — operator portal styles
-   TODO Phase 1 (Task 1.2): Flexbox or Grid layout for this portal's
-   forms, cards, dashboard panels and tables. */
+﻿/* Hub Operator Portal: extends the shared main.css theme. */
+* { box-sizing: border-box; }
+body { line-height: 1.5; }
+header { gap: 24px; flex-wrap: wrap; }
+header h1 { font-size: 24px; }
+nav ul { flex-wrap: wrap; gap: 12px 24px; }
+nav a { display: inline-block; padding: 6px 0; }
+nav a[aria-current="page"] { border-bottom: 3px solid #F2B700; }
+header nav a:hover { color: #F2B700; }
+:focus-visible { outline: 3px solid #49176D; outline-offset: 4px; }
+header a:focus-visible { outline-color: #F2B700; }
+.skip-link { position: absolute; top: -100px; left: 16px; z-index: 1; padding: 12px; background: #FFFFFF; }
+.skip-link:focus { top: 12px; }
+.page-intro { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin: 12px 0 28px; }
+.eyebrow { color: #666666; font-size: 12px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; margin: 0 0 8px; }
+.page-intro h2 { font-size: 30px; margin: 0; }
+.page-intro p:last-child { color: #666666; margin: 8px 0 0; }
+.phase-label, .sample-label { color: #49176D; background: #FFFFFF; border: 1px solid #DDDDDD; border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: bold; }
+.dashboard-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(240px, 1fr); align-items: start; gap: 24px; }
+.check-in-panel { padding: 28px; }
+.panel h2, .receiving-guide h2 { margin-top: 0; }
+.section-description { color: #666666; font-size: 14px; margin: 0 0 24px; }
+fieldset { border: 0; border-top: 1px solid #DDDDDD; padding: 20px 0 8px; margin: 0; min-width: 0; }
+legend { padding: 0 12px 0 0; font-weight: bold; color: #49176D; }
+.step-number { font-size: 12px; margin-right: 8px; }
+input, select { min-height: 44px; background: #FFFFFF; color: #222222; }
+small, .field-help { font-size: 12px; color: #666666; }
+.weight-field { max-width: 260px; }
+.field-help { margin: 0 0 10px; }
+.dimensions-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.priority-choice { display: flex; align-items: flex-start; gap: 12px; padding: 16px; background: #F7F5FA; border: 1px solid #DDDDDD; border-radius: 6px; cursor: pointer; }
+.priority-choice input { width: 20px; height: 20px; min-height: 20px; flex-shrink: 0; margin: 2px 0 0; accent-color: #49176D; }
+.priority-choice small { display: block; margin-top: 4px; }
+.preview-notice { font-size: 12px; color: #666666; margin: 20px 0; }
+.preview-notice:target { border-left: 3px solid #F2B700; padding-left: 12px; }
+.form-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+button { min-height: 44px; }
+.secondary-button { color: #49176D; background: #FFFFFF; border: 1px solid #49176D; }
+.secondary-button:hover { color: #FFFFFF; }
+.receiving-guide { padding: 24px; }
+.receiving-guide h2 { font-size: 20px; }
+.receiving-guide ol { padding-left: 20px; }
+.receiving-guide li { padding-left: 6px; margin-bottom: 22px; }
+.receiving-guide li::marker { color: #49176D; font-weight: bold; }
+.receiving-guide p:not(.eyebrow) { font-size: 14px; color: #666666; margin: 6px 0 0; }
+.guide-note { border-top: 1px solid #DDDDDD; padding-top: 20px; }
+.guide-note strong { color: #49176D; }
+.section-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 12px; }
+.section-heading h2 { margin-bottom: 6px; }
+.table-scroll { overflow-x: auto; }
+table { border-collapse: collapse; font-size: 13px; margin-bottom: 0; }
+caption { text-align: left; color: #666666; font-size: 12px; padding: 0 0 12px; }
+thead th { font-size: 12px; white-space: nowrap; }
+tbody th { background: #FFFFFF; color: #49176D; border: 1px solid #DDDDDD; font-weight: normal; }
+tbody tr:nth-child(even) td, tbody tr:nth-child(even) th { background: #F7F5FA; }
+td, tbody th { padding: 16px 12px; vertical-align: middle; }
+.barcode { font-family: Consolas, monospace; white-space: nowrap; }
+.cell-detail { display: block; font-size: 12px; color: #666666; }
+.badge { display: inline-block; white-space: nowrap; padding: 3px 8px; border: 1px solid #DDDDDD; border-radius: 4px; color: #49176D; background: #F7F5FA; font-size: 12px; }
+.urgent-badge { border-left: 3px solid #F2B700; font-weight: bold; background: #FFFFFF; }
+footer { margin-top: 16px; font-size: 12px; }
+@media (max-width: 760px) {
+  header { padding: 20px; }
+  .container { padding: 20px 16px; }
+  .dashboard-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .check-in-panel, .receiving-guide, .log-panel { padding: 20px; }
+  .page-intro h2 { font-size: 26px; }
+}
+@media (max-width: 400px) {
+  .dimensions-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .form-actions button { width: 100%; }
+}
