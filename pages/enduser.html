@@ -1,38 +1,107 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Campus End-User Portal — MNSU-CampusEco</title>
-    <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="../css/enduser.css">
-  </head>
-  <body>
-    <header>
-      <h1>Campus End-User Portal</h1>
-      <nav>
-        <ul>
-          <li><a href="../index.html">Home</a></li>
-          <li><a href="operator.html">Hub Operator</a></li>
-          <li><a href="courier.html">Eco-Transit Crew</a></li>
-          <li><a href="enduser.html">Campus End-User</a></li>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus End-User Portal — MNSU-CampusEco</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/enduser.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header>
+    <h1>Campus End-User Portal</h1>
+    <nav aria-label="Main navigation"><ul>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="operator.html">Hub Operator</a></li>
+      <li><a href="courier.html">Eco-Transit Crew</a></li>
+      <li><a href="enduser.html" aria-current="page">Campus End-User</a></li>
+    </ul></nav>
+  </header>
+  <main id="main-content" class="container">
+    <div class="welcome">
+      <p class="eyebrow">MNSU-CampusEco / Students, faculty &amp; staff</p>
+      <h2>Your campus deliveries, in one place.</h2>
+      <p>Follow your packages, choose how they reach you, and see the impact of greener deliveries.</p>
+    </div>
+    <p class="demo-note"><strong>Phase 1 static preview.</strong> All packages, notifications, and metrics are sample data. Forms use browser validation; submitting returns to this page without looking up packages, saving preferences, or recording signatures.</p>
+    <div class="dashboard-grid">
+      <section class="panel" aria-labelledby="tracking-heading">
+        <h2 id="tracking-heading">Track a package</h2>
+        <form action="enduser.html#tracking-example" method="get">
+          <div class="form-group">
+            <label for="tracking-number">Campus tracking number (required)</label>
+            <input id="tracking-number" name="tracking" required pattern="CE-[0-9]{8}" maxlength="11" placeholder="CE-20261001" aria-describedby="tracking-help" title="Enter CE- followed by eight digits, for example CE-20261001.">
+            <small id="tracking-help">Use CE- followed by 8 digits. This preview always shows the sample package below.</small>
+          </div>
+          <button type="submit">Validate tracking number</button>
+        </form>
+        <div id="tracking-example" class="package-summary">
+          <div class="section-heading"><h3>Sample package · CE-20261001</h3><span class="status">Out for delivery</span></div>
+          <dl class="package-details">
+            <div><dt>Destination</dt><dd>Julia Sears Hall · Front desk</dd></div>
+            <div><dt>Expected arrival</dt><dd>October 5, 2026 · 2–4 p.m.</dd></div>
+            <div><dt>Delivery method</dt><dd>Campus electric cart</dd></div>
+            <div><dt>Last update</dt><dd>October 5, 2026 · 1:15 p.m.</dd></div>
+          </dl>
+        </div>
+        <div class="table-scroll" role="region" aria-label="Package tracking history" tabindex="0">
+          <table>
+            <caption>Sample tracking history · Times are Central Time</caption>
+            <thead><tr><th scope="col">Date &amp; time</th><th scope="col">Status</th><th scope="col">Location</th></tr></thead>
+            <tbody>
+              <tr><td><time datetime="2026-10-05T13:15:00-05:00">Oct 5 · 1:15 p.m.</time></td><td>Out for delivery</td><td>Campus route · Electric cart 02</td></tr>
+              <tr><td><time datetime="2026-10-05T10:30:00-05:00">Oct 5 · 10:30 a.m.</time></td><td>Sorted for delivery</td><td>Central logistics hub</td></tr>
+              <tr><td><time datetime="2026-10-05T09:10:00-05:00">Oct 5 · 9:10 a.m.</time></td><td>Received at hub</td><td>Central logistics hub</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="panel" aria-labelledby="notifications-heading">
+        <h2 id="notifications-heading">Delivery notifications</h2>
+        <p class="muted">Sample updates for your campus deliveries.</p>
+        <ul class="notifications">
+          <li><span class="status">In transit</span><h3>Your package is on its way</h3><p>CE-20261001 is headed to Julia Sears Hall. Expected today, 2–4 p.m.</p><time datetime="2026-10-05T13:15:00-05:00">October 5 · 1:15 p.m.</time></li>
+          <li><span class="status">Ready for pickup</span><h3>A delivery is waiting for you</h3><p>CE-20261002 is at the Memorial Library service desk. Bring your campus ID for pickup.</p><time datetime="2026-10-05T11:40:00-05:00">October 5 · 11:40 a.m.</time></li>
+          <li><span class="status">Delivered</span><h3>Delivery completed</h3><p>CE-20261003 was received at the Centennial Student Union information desk.</p><time datetime="2026-10-02T15:20:00-05:00">October 2 · 3:20 p.m.</time></li>
         </ul>
-      </nav>
-    </header>
-
-    <main>
-      <!-- TODO Phase 1 (Task 1.1 + 1.3):
-           - Package tracking lookup form (tracking number, required, pattern)
-           - Tracking history table
-           - Notifications list
-           - Delivery preference form (email, required, type=email; preferred
-             building dropdown; notification checkboxes)
-           - Carbon savings panel
-      -->
-    </main>
-
-    <footer>
-      <p>CIS 483 &mdash; Fall 2026 &mdash; Minnesota State University, Mankato</p>
-    </footer>
-  </body>
+      </section>
+      <section id="preferences" class="panel" aria-labelledby="preferences-heading">
+        <h2 id="preferences-heading">Delivery preferences</h2>
+        <p>Choose a destination and notification options. Fields marked required must be completed.</p>
+        <form action="enduser.html#preferences" method="get">
+          <div class="form-group"><label for="campus-role">Campus role (required)</label><select id="campus-role" required><option value="">Choose your role</option><option>Student</option><option>Faculty</option><option>Staff</option></select></div>
+          <div class="form-group"><label for="email">Email address (required)</label><input id="email" type="email" autocomplete="email" required maxlength="254" placeholder="you@example.edu"></div>
+          <div class="form-group"><label for="building">Preferred building (required)</label><select id="building" required><option value="">Choose a building</option><option>Julia Sears Hall</option><option>Preska Residence Community</option><option>Memorial Library</option><option>Centennial Student Union</option><option>Wissink Hall</option></select></div>
+          <div class="form-group"><label for="delivery-location">Room or pickup location (required)</label><input id="delivery-location" required maxlength="80" pattern=".*\S.*" placeholder="Front desk or office 201" title="Enter a room or pickup location, not just spaces."></div>
+          <fieldset><legend>Delivery method</legend><label class="choice"><input type="radio" name="delivery-method" value="desk" checked> Building front desk</label><label class="choice"><input type="radio" name="delivery-method" value="office"> Office delivery</label><label class="choice"><input type="radio" name="delivery-method" value="hub"> Collect at central hub</label></fieldset>
+          <fieldset><legend>Notification preferences</legend><label class="choice"><input type="checkbox" checked> Email when a package arrives at the hub</label><label class="choice"><input type="checkbox" checked> Email when a package is ready for pickup</label><label class="choice"><input type="checkbox"> Email when delivery is completed</label></fieldset>
+          <div class="form-group"><label for="delivery-notes">Delivery instructions (optional)</label><textarea id="delivery-notes" rows="3" maxlength="300" placeholder="Add access or pickup instructions." aria-describedby="notes-help"></textarea><small id="notes-help">Up to 300 characters. Do not include door codes or sensitive information.</small></div>
+          <button type="submit">Validate preferences</button>
+          <small class="form-note">Preview only. Preferences are not saved; contact details are not included in the submission URL.</small>
+        </form>
+      </section>
+      <div class="side-panels">
+        <section id="sign-off" class="panel" aria-labelledby="signoff-heading">
+          <h2 id="signoff-heading">Electronic sign-off</h2>
+          <p>Sample pickup: <strong>CE-20261002</strong> at Memorial Library. Complete this area only after receiving your package.</p>
+          <form action="enduser.html#sign-off" method="get">
+            <div class="form-group"><label for="signature">Full name / electronic signature (required)</label><input id="signature" autocomplete="name" required minlength="2" maxlength="100" pattern=".*\S.*" title="Enter your full name, using at least two characters." aria-describedby="signature-help"><small id="signature-help">Typing your name represents an electronic signature in this demonstration.</small></div>
+            <label class="choice consent"><input type="checkbox" required> I confirm that I received package CE-20261002 and agree to sign electronically (required).</label>
+            <button type="submit">Validate sign-off</button>
+            <small class="form-note">Preview only. No receipt or signature is recorded.</small>
+          </form>
+        </section>
+        <section class="panel" aria-labelledby="carbon-heading">
+          <p class="eyebrow">Small deliveries. Shared impact.</p>
+          <h2 id="carbon-heading">Your carbon reduction</h2>
+          <p class="muted">Illustrative monthly metrics · October 2026</p>
+          <dl class="carbon-metrics"><div><dt>Estimated CO<sub>2</sub> avoided</dt><dd>2.4 <span>kg</span></dd></div><div><dt>Electric cart deliveries</dt><dd>6</dd></div><div><dt>Delivery distance</dt><dd>12 <span>km</span></dd></div></dl>
+          <p class="metric-note">Sample estimate: 12 km × 0.20 kg CO<sub>2</sub> avoided per km compared with individual vehicle trips. This demonstration assumption is not a measured emissions result.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+  <footer><p>CIS 483 &mdash; Fall 2026 &mdash; Minnesota State University, Mankato</p></footer>
+</body>
 </html>
