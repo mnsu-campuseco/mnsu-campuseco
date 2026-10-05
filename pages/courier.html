@@ -1,35 +1,208 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eco-Transit Crew Portal — MNSU-CampusEco</title>
-    <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="../css/courier.css">
-  </head>
-  <body>
-    <header>
-      <h1>Eco-Transit Crew Portal</h1>
-      <nav>
-        <ul>
-          <li><a href="../index.html">Home</a></li>
-          <li><a href="operator.html">Hub Operator</a></li>
-          <li><a href="courier.html">Eco-Transit Crew</a></li>
-          <li><a href="enduser.html">Campus End-User</a></li>
-        </ul>
-      </nav>
-    </header>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eco-Transit Crew Portal — MNSU-CampusEco</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/courier.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <header>
+    <h1>Eco-Transit Crew Portal</h1>
+    <nav aria-label="Main navigation">
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="operator.html">Hub Operator</a></li>
+        <li><a href="courier.html" aria-current="page">Eco-Transit Crew</a></li>
+        <li><a href="enduser.html">Campus End-User</a></li>
+      </ul>
+    </nav>
+  </header>
 
-    <main>
-      <!-- TODO Phase 1 (Task 1.1):
-           - Route queue table: package id, destination, priority, claim button
-           - Transit status control (radio: Loaded / En Route / Delivered)
-           - Cart battery status form (number input, 0-100)
-      -->
-    </main>
+  <main id="main-content" class="container">
+    <div class="page-intro">
+      <div>
+        <p class="eyebrow">MNSU-CampusEco / Campus Eco-Transit Crews</p>
+        <h2>Route queue and transit updates</h2>
+        <p>Sign in to your cart, claim deliveries from the queue, and report each transit milestone.</p>
+      </div>
+      <span class="phase-label">Phase 1 &middot; Static preview</span>
+    </div>
 
-    <footer>
-      <p>CIS 483 &mdash; Fall 2026 &mdash; Minnesota State University, Mankato</p>
-    </footer>
-  </body>
+    <div class="crew-grid">
+      <section class="panel" aria-labelledby="signin-heading">
+        <h2 id="signin-heading">Crew sign-in</h2>
+        <p class="section-description">Identify the student-worker and the electric cart for this shift.</p>
+        <form action="courier.html#preview-notice" method="get">
+          <fieldset>
+            <legend><span class="step-number">01</span> Driver</legend>
+            <div class="form-group">
+              <label for="driver-id">Driver ID</label>
+              <input id="driver-id" name="driver-id" type="text" required pattern="ECO-[0-9]{4}"
+                placeholder="ECO-0417" spellcheck="false" aria-describedby="driver-id-help"
+                title="Use the format ECO-0417: the letters ECO, a hyphen, then four digits.">
+              <small id="driver-id-help">Format: ECO- followed by four digits.</small>
+            </div>
+            <div class="form-group">
+              <label for="passcode">Shift passcode</label>
+              <input id="passcode" name="passcode" type="password" required minlength="8"
+                aria-describedby="passcode-help">
+              <small id="passcode-help">At least 8 characters.</small>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend><span class="step-number">02</span> Vehicle</legend>
+            <div class="form-group">
+              <label for="cart">Assigned electric cart</label>
+              <select id="cart" name="cart" required>
+                <option value="" selected disabled>Select a cart</option>
+                <option value="cart-01">Cart 01 &mdash; North loop</option>
+                <option value="cart-02">Cart 02 &mdash; South loop</option>
+                <option value="cart-03">Cart 03 &mdash; Residence halls</option>
+                <option value="cart-04">Cart 04 &mdash; Academic buildings</option>
+              </select>
+            </div>
+            <div class="form-group battery-field">
+              <label for="battery">Battery level (%)</label>
+              <input id="battery" name="battery" type="number" required min="0" max="100" step="1"
+                placeholder="85" aria-describedby="battery-help">
+              <small id="battery-help">0&ndash;100 percent, whole numbers only.</small>
+            </div>
+          </fieldset>
+          <div class="form-actions">
+            <button type="submit">Start shift (preview)</button>
+            <button class="secondary-button" type="reset">Clear form</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel" aria-labelledby="status-heading">
+        <h2 id="status-heading">Update transit milestone</h2>
+        <p class="section-description">Report where a claimed package is in its journey.</p>
+        <form action="courier.html#preview-notice" method="get">
+          <div class="form-group">
+            <label for="package">Claimed package</label>
+            <select id="package" name="package" required>
+              <option value="" selected disabled>Select a package</option>
+              <option value="1Z999AA10123456784">1Z999AA10123456784 &mdash; Julia Sears Hall</option>
+              <option value="94001118992238569201">94001118992238569201 &mdash; Memorial Library</option>
+              <option value="784512345678">784512345678 &mdash; Centennial Student Union</option>
+            </select>
+          </div>
+          <fieldset class="status-fieldset">
+            <legend>Transit status</legend>
+            <label class="radio-choice" for="status-loaded">
+              <input id="status-loaded" name="status" type="radio" value="loaded" required checked>
+              <span><strong>Loaded</strong><small>Package is on the cart at the hub.</small></span>
+            </label>
+            <label class="radio-choice" for="status-en-route">
+              <input id="status-en-route" name="status" type="radio" value="en-route">
+              <span><strong>En Route</strong><small>Cart is moving toward the destination.</small></span>
+            </label>
+            <label class="radio-choice" for="status-delivered">
+              <input id="status-delivered" name="status" type="radio" value="delivered">
+              <span><strong>Delivered</strong><small>Package is in the locker array or handed over.</small></span>
+            </label>
+          </fieldset>
+          <div class="form-group">
+            <label for="note">Delivery note (optional)</label>
+            <input id="note" name="note" type="text" maxlength="80" placeholder="Locker array A, shelf 3">
+          </div>
+          <div class="form-actions">
+            <button type="submit">Update milestone (preview)</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <p id="preview-notice" class="preview-notice"><strong>Preview only.</strong> Submitting checks the fields and reloads this page. Nothing is saved, claimed, or dispatched during Phase 1.</p>
+
+    <section class="panel" aria-labelledby="queue-heading">
+      <div class="section-heading">
+        <div>
+          <h2 id="queue-heading">Optimized route queue</h2>
+          <p class="section-description">Deliveries waiting to be claimed, ordered by priority.</p>
+        </div>
+        <span class="sample-label">Sample data &middot; 4 deliveries</span>
+      </div>
+      <div class="table-scroll" role="region" aria-label="Route queue" tabindex="0">
+        <table>
+          <caption>Illustrative queue &mdash; October 5, 2026. Claim buttons are inactive in Phase 1.</caption>
+          <thead>
+            <tr>
+              <th scope="col">Package ID</th>
+              <th scope="col">Destination</th>
+              <th scope="col">Priority</th>
+              <th scope="col">Stops</th>
+              <th scope="col">Status</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row" class="barcode">1Z999AA10123456784</th>
+              <td>Julia Sears Hall<span class="cell-detail">Array A</span></td>
+              <td><span class="badge urgent-badge">Urgent</span></td>
+              <td>1 of 4</td>
+              <td><span class="badge">Loaded</span></td>
+              <td><button type="button">Claim</button></td>
+            </tr>
+            <tr>
+              <th scope="row" class="barcode">94001118992238569201</th>
+              <td>Memorial Library<span class="cell-detail">Array A</span></td>
+              <td>Standard</td>
+              <td>2 of 4</td>
+              <td><span class="badge">Unclaimed</span></td>
+              <td><button type="button">Claim</button></td>
+            </tr>
+            <tr>
+              <th scope="row" class="barcode">784512345678</th>
+              <td>Centennial Student Union<span class="cell-detail">Array A</span></td>
+              <td>Standard</td>
+              <td>3 of 4</td>
+              <td><span class="badge">En Route</span></td>
+              <td><button type="button">Claim</button></td>
+            </tr>
+            <tr>
+              <th scope="row" class="barcode">1Z999AA10123456785</th>
+              <td>Trafton Science Center<span class="cell-detail">Array B</span></td>
+              <td><span class="badge urgent-badge">Urgent</span></td>
+              <td>4 of 4</td>
+              <td><span class="badge">Unclaimed</span></td>
+              <td><button type="button">Claim</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="fleet-heading">
+      <h2 id="fleet-heading">Cart battery status</h2>
+      <p class="section-description">Reported at the start of each shift.</p>
+      <div class="card-row">
+        <article class="card">
+          <h3>Cart 01</h3>
+          <p class="battery-value">88%</p>
+          <p class="cell-detail">North loop &middot; ready</p>
+        </article>
+        <article class="card">
+          <h3>Cart 02</h3>
+          <p class="battery-value">64%</p>
+          <p class="cell-detail">South loop &middot; ready</p>
+        </article>
+        <article class="card">
+          <h3>Cart 03</h3>
+          <p class="battery-value low">19%</p>
+          <p class="cell-detail">Residence halls &middot; needs charging</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>CIS 483 &mdash; Fall 2026 &mdash; Minnesota State University, Mankato</p>
+  </footer>
+</body>
 </html>
