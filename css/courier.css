@@ -1,3 +1,305 @@
+/* ==========================================================
+   courier.css — Eco-Transit Crew Portal
+   Owner: Clement Mbuyi
+   Extends the shared theme in main.css. Colors and class
+   names come from the scheme documented at the top of
+   main.css: purple #49176D, dark purple #33104D,
+   gold #F2B700, muted text #666666, borders #DDDDDD.
+   ========================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+/* Keyboard users: a clear outline on whatever is focused */
+:focus-visible {
+  outline: 3px solid #49176D;
+  outline-offset: 4px;
+}
+
+header a:focus-visible {
+  outline-color: #F2B700;
+}
+
+/* Skip link: hidden until focused, then jumps past the nav */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 16px;
+  padding: 12px;
+  background-color: #FFFFFF;
+}
+
+.skip-link:focus {
+  top: 12px;
+}
+
+/* Header: let the title and nav wrap on narrower windows */
+header {
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+header h1 {
+  font-size: 24px;
+}
+
+nav ul {
+  flex-wrap: wrap;
+  gap: 12px 24px;
+}
+
+nav a {
+  display: inline-block;
+  padding: 6px 0;
+}
+
+/* Current page in the nav gets a gold underline */
+nav a[aria-current="page"] {
+  border-bottom: 3px solid #F2B700;
+}
+
+/* Page intro: title block on the left, phase tag on the right */
+.page-intro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 12px 0 28px 0;
+}
+
+.page-intro h2 {
+  font-size: 30px;
+  margin: 0;
+}
+
+.page-intro p:last-child {
+  color: #666666;
+  margin: 8px 0 0 0;
+}
+
+/* Small uppercase label above a heading */
+.eyebrow {
+  color: #666666;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 0 0 8px 0;
+}
+
+/* Rounded tags used for the phase label and the sample-data note */
+.phase-label,
+.sample-label {
+  color: #49176D;
+  background-color: #FFFFFF;
+  border: 1px solid #DDDDDD;
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* The two forms sit side by side, and stack when space runs out */
+.crew-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.crew-grid .panel {
+  flex: 1 1 380px;
+  padding: 28px;
+}
+
+.panel h2 {
+  margin-top: 0;
+}
+
+.section-description {
+  color: #666666;
+  font-size: 14px;
+  margin: 0 0 24px 0;
+}
+
+/* Heading row with a tag pushed to the far side */
+.section-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* Fieldsets group the form into numbered steps */
+fieldset {
+  border: 0;
+  border-top: 1px solid #DDDDDD;
+  padding: 20px 0 8px 0;
+  margin: 0;
+  min-width: 0;
+}
+
+legend {
+  padding: 0 12px 0 0;
+  font-weight: bold;
+  color: #49176D;
+}
+
+.step-number {
+  font-size: 12px;
+  margin-right: 8px;
+}
+
+/* Inputs: taller tap targets for couriers using a phone */
+input,
+select {
+  min-height: 44px;
+  background-color: #FFFFFF;
+  color: #222222;
+}
+
+small {
+  font-size: 12px;
+  color: #666666;
+}
+
+.battery-field {
+  max-width: 220px;
+}
+
+/* Radio choices: each option is a full-width clickable row */
+.status-fieldset {
+  border-top: 1px solid #DDDDDD;
+}
+
+.radio-choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border: 2px solid #DDDDDD;
+  border-radius: 6px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.radio-choice:hover {
+  border-color: #49176D;
+}
+
+.radio-choice input {
+  width: auto;
+  min-height: 0;
+  margin-top: 4px;
+}
+
+.radio-choice span {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Buttons sit in a row with space between them */
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+/* Secondary button: outlined instead of filled */
+.secondary-button {
+  background-color: #FFFFFF;
+  color: #49176D;
+  border: 2px solid #49176D;
+}
+
+.secondary-button:hover {
+  background-color: #F7F5FA;
+  color: #33104D;
+}
+
+/* Notice explaining that Phase 1 saves nothing */
+.preview-notice {
+  background-color: #FFFFFF;
+  border: 1px solid #DDDDDD;
+  border-left: 4px solid #F2B700;
+  border-radius: 6px;
+  padding: 14px 16px;
+  font-size: 14px;
+  margin: 0 0 24px 0;
+}
+
+/* Wide tables scroll sideways instead of breaking the layout */
+.table-scroll {
+  overflow-x: auto;
+}
+
+.table-scroll table {
+  min-width: 720px;
+}
+
+caption {
+  caption-side: bottom;
+  color: #666666;
+  font-size: 12px;
+  text-align: left;
+  padding-top: 10px;
+}
+
+/* Row header cells: the package barcode */
+tbody th {
+  background-color: #FFFFFF;
+  color: #222222;
+  font-family: "Courier New", Courier, monospace;
+  border: 1px solid #DDDDDD;
+  padding: 10px 12px;
+}
+
+/* Smaller grey detail line inside a table cell or card */
+.cell-detail {
+  display: block;
+  color: #666666;
+  font-size: 12px;
+}
+
+/* Claim buttons in the table are smaller than page buttons */
+td button {
+  padding: 6px 14px;
+  font-size: 14px;
+}
+
+/* Status badges */
+.badge {
+  display: inline-block;
+  background-color: #F7F5FA;
+  border: 1px solid #DDDDDD;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.urgent-badge {
+  background-color: #F2B700;
+  border-color: #F2B700;
+  color: #33104D;
+}
+
+/* Battery cards */
+.battery-value {
+  color: #49176D;
+  font-size: 32px;
+  font-weight: bold;
+  margin: 8px 0 4px 0;
+}
+
+/* A low battery is called out in words as well as color */
+.battery-value.low {
+  color: #A33A00;
+}
 /* courier.css — courier portal styles
    TODO Phase 1 (Task 1.2): Flexbox or Grid layout for this portal's
    forms, cards, dashboard panels and tables. */
