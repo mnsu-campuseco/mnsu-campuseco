@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CampusEco — Technical Presentation 1</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #ece8f0;
+        color: #222;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      .slide {
+        display: none;
+        width: min(1280px, 100vw);
+        min-height: min(720px, 85vh);
+        padding: 64px 72px;
+        margin: 24px auto;
+        background: white;
+        border-top: 10px solid #49176d;
+      }
+      .slide.active {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      h1 {
+        font-size: 64px;
+        line-height: 1.07;
+        color: #49176d;
+        margin: 0 0 28px;
+        max-width: 1000px;
+      }
+      h2 {
+        font-size: 42px;
+        line-height: 1.15;
+        color: #49176d;
+        margin: 0 0 32px;
+      }
+      p,
+      li {
+        font-size: 27px;
+        line-height: 1.5;
+      }
+      p {
+        margin: 12px 0;
+      }
+      li {
+        margin-bottom: 16px;
+      }
+      .small {
+        font-size: 18px;
+        color: #666;
+      }
+      .label {
+        color: #49176d;
+        font-size: 19px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 24px;
+      }
+      .flow {
+        font-size: 36px;
+        line-height: 1.8;
+        color: #49176d;
+        margin-bottom: 26px;
+      }
+      .split {
+        display: grid;
+        grid-template-columns: 1fr 1.2fr;
+        gap: 40px;
+        align-items: start;
+      }
+      .split p,
+      .split li {
+        font-size: 23px;
+      }
+      img {
+        width: 100%;
+        border: 1px solid #ddd;
+        max-height: 420px;
+        object-fit: contain;
+        object-position: top;
+      }
+      .phone {
+        width: 190px;
+        max-height: 430px;
+        object-fit: cover;
+        object-position: top;
+        justify-self: center;
+      }
+      code {
+        font-size: 0.8em;
+        color: #49176d;
+        overflow-wrap: anywhere;
+      }
+      a {
+        color: #49176d;
+      }
+      nav {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 16px;
+        padding: 0 16px 24px;
+      }
+      button {
+        background: #49176d;
+        color: white;
+        border: 0;
+        border-radius: 4px;
+        min-height: 44px;
+        padding: 10px 20px;
+        font: inherit;
+        cursor: pointer;
+      }
+      button:disabled {
+        opacity: 0.45;
+      }
+      :focus-visible {
+        outline: 3px solid #b47b00;
+        outline-offset: 4px;
+      }
+      #counter {
+        min-width: 90px;
+        text-align: center;
+      }
+      .help {
+        text-align: center;
+        font-size: 14px;
+        color: #666;
+        padding: 0 16px;
+      }
+      @media (max-width: 700px) {
+        .slide {
+          margin: 0;
+          padding: 28px 24px;
+          min-height: 75vh;
+        }
+        h1 {
+          font-size: 42px;
+        }
+        h2 {
+          font-size: 32px;
+        }
+        p,
+        li,
+        .split p,
+        .split li {
+          font-size: 20px;
+        }
+        .flow {
+          font-size: 26px;
+        }
+        .split {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+        img {
+          max-height: 240px;
+        }
+        .phone {
+          max-height: 260px;
+        }
+        nav {
+          padding-top: 20px;
+        }
+      }
+      @page {
+        size: landscape;
+        margin: 0;
+      }
+      @media print {
+        body {
+          background: white;
+        }
+        .slide,
+        .slide.active {
+          display: flex !important;
+          flex-direction: column;
+          justify-content: center;
+          width: 100%;
+          height: 100vh;
+          min-height: 0;
+          margin: 0;
+          padding: 40px 56px;
+          break-after: page;
+        }
+        .slide:last-of-type {
+          break-after: auto;
+        }
+        h1 {
+          font-size: 48px;
+        }
+        h2 {
+          font-size: 34px;
+        }
+        p,
+        li {
+          font-size: 22px;
+        }
+        .split p,
+        .split li {
+          font-size: 20px;
+        }
+        img {
+          max-height: 340px;
+        }
+        .phone {
+          max-height: 350px;
+        }
+        nav,
+        .help {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main aria-label="Technical Presentation 1">
+      <section class="slide active" aria-labelledby="slide-1" tabindex="-1">
+        <p class="label">CIS 483 · Phase 2 · October 26, 2026</p>
+        <h1 id="slide-1">MNSU-CampusEco</h1>
+        <p>Client interactivity and responsive campus logistics</p>
+        <p class="small">Misgana Kebede · Clement Mbuyi<br />Yonatan Alemayehu · Emran Abatemam</p>
+      </section>
+      <section class="slide" aria-labelledby="slide-2" tabindex="-1">
+        <h2 id="slide-2">One connected delivery workflow</h2>
+        <p class="flow">Check in → Claim → Loaded<br />En Route → Delivered → Receipt</p>
+        <p>The same tracking number connects the hub, crew, and recipient portals.</p>
+        <p>Each update adds a timestamped event. The interface updates without a page refresh.</p>
+        <p class="small">A shared browser simulation; no real deliveries or authentication.</p>
+      </section>
+      <section class="slide" aria-labelledby="slide-3" tabindex="-1">
+        <h2 id="slide-3">JavaScript models and persistence</h2>
+        <ul>
+          <li>
+            <code>Package</code> validates cargo, assigns ownership, enforces milestones, and
+            records receipt.
+          </li>
+          <li>
+            <code>Vehicle</code> validates battery reports; <code>EcoCourier</code> represents the
+            active driver.
+          </li>
+          <li>
+            Versioned localStorage preserves records. Hydration restores object behavior after
+            refresh.
+          </li>
+          <li>Storage events refresh other tabs; sessionStorage keeps a tab’s active shift.</li>
+        </ul>
+        <p class="small">
+          Code: js/models.js and js/app.js. Storage is limited to one browser origin.
+        </p>
+      </section>
+      <section class="slide" aria-labelledby="slide-4" tabindex="-1">
+        <h2 id="slide-4">jQuery drives the interface</h2>
+        <div class="split">
+          <div>
+            <p>Delegated clicks handle newly added delivery rows.</p>
+            <p>Sliding options reveal preferences and queue filters.</p>
+            <p>The cart marker animates between transit stages. Reduced motion is respected.</p>
+          </div>
+          <div>
+            <img
+              src="assets/courier-desktop.png"
+              alt="Desktop courier portal with shift and milestone controls"
+            />
+            <p class="small">Official minified jQuery 3.7.1 is bundled locally.</p>
+          </div>
+        </div>
+      </section>
+      <section class="slide" aria-labelledby="slide-5" tabindex="-1">
+        <h2 id="slide-5">Responsive courier tools</h2>
+        <div class="split">
+          <div>
+            <p>One column on phones; two dashboard columns on desktop.</p>
+            <p>The mobile queue becomes a list of labeled delivery cards.</p>
+            <p>
+              Navigation wraps, controls stay reachable, and wide logs scroll within their regions.
+            </p>
+            <p class="small">Checked at 320, 390, 768, and 1440 pixels.</p>
+          </div>
+          <img
+            class="phone"
+            src="assets/courier-phone.png"
+            alt="Courier dashboard shown at a 390-pixel mobile viewport"
+          />
+        </div>
+      </section>
+      <section class="slide" aria-labelledby="slide-6" tabindex="-1">
+        <h2 id="slide-6">Live delivery demonstration</h2>
+        <ol>
+          <li>Hub: check in <strong>CE-20261004</strong>, 3.2 lb, 12 × 8 × 6 in.</li>
+          <li>Crew: start <strong>ECO-1234 / cart-01</strong> and claim it.</li>
+          <li>Advance Loaded → En Route → Delivered.</li>
+          <li>Recipient: track, confirm receipt, then refresh.</li>
+        </ol>
+        <p class="small">
+          <a href="../index.html" target="_blank" rel="noopener">Open the application</a> · Keep an
+          operator tab open to show shared updates.
+        </p>
+      </section>
+      <section class="slide" aria-labelledby="slide-7" tabindex="-1">
+        <h2 id="slide-7">Verification and demo boundaries</h2>
+        <ul>
+          <li>Tests cover the complete delivery journey, saved state, and updates across tabs.</li>
+          <li>
+            Invalid cargo, duplicate tracking, wrong milestone order, and low battery are rejected.
+          </li>
+          <li>
+            Browser checks exercise mobile layouts, keyboard panels, and literal text rendering.
+          </li>
+        </ul>
+        <p class="small">
+          No real authentication, email, or GPS. Carbon metrics use an illustrative 2 km × 0.20 kg
+          CO₂ per delivery.
+        </p>
+      </section>
+      <section class="slide" aria-labelledby="slide-8" tabindex="-1">
+        <h2 id="slide-8">Phase 3 handoff</h2>
+        <p>
+          Replace browser storage with authenticated JSON endpoints and durable relational records.
+        </p>
+        <p>
+          Move business rules to server validation, then add asynchronous updates and the required
+          backend technologies.
+        </p>
+        <p class="small">
+          Phase 2 stays entirely in the frontend. Development Node tooling serves static files only.
+        </p>
+        <p class="small">
+          Sources: project assignment, Phase 2 Tasks 2.1–2.3; repository implementation;
+          <a href="https://api.jquery.com/on/">jQuery events</a> and
+          <a href="https://api.jquery.com/animate/">animation documentation</a>.
+        </p>
+      </section>
+    </main>
+    <nav aria-label="Slide controls">
+      <button id="previous" type="button">Previous</button
+      ><span id="counter" aria-live="polite">1 / 8</span
+      ><button id="next" type="button">Next</button>
+    </nav>
+    <p class="help">Arrow keys · Home / End · F11 for fullscreen · Print for landscape slides</p>
+    <script>
+      const slides = [...document.querySelectorAll('.slide')];
+      let current = 0;
+      function show(index, focus = true) {
+        current = Math.max(0, Math.min(index, slides.length - 1));
+        slides.forEach((slide, i) => {
+          slide.classList.toggle('active', i === current);
+          slide.setAttribute('aria-hidden', String(i !== current));
+        });
+        document.querySelector('#counter').textContent = `${current + 1} / ${slides.length}`;
+        document.querySelector('#previous').disabled = current === 0;
+        document.querySelector('#next').disabled = current === slides.length - 1;
+        if (focus) slides[current].focus();
+      }
+      document.querySelector('#previous').addEventListener('click', () => show(current - 1));
+      document.querySelector('#next').addEventListener('click', () => show(current + 1));
+      document.addEventListener('keydown', (event) => {
+        const actions = {
+          ArrowRight: current + 1,
+          ArrowDown: current + 1,
+          PageDown: current + 1,
+          ArrowLeft: current - 1,
+          ArrowUp: current - 1,
+          PageUp: current - 1,
+          Home: 0,
+          End: slides.length - 1,
+        };
+        if (Object.hasOwn(actions, event.key)) {
+          event.preventDefault();
+          show(actions[event.key]);
+        }
+      });
+      show(0, false);
+    </script>
+  </body>
+</html>

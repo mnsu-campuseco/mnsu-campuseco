@@ -1,131 +1,229 @@
-﻿<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hub Operator Portal — MNSU-CampusEco</title>
-  <link rel="stylesheet" href="../css/main.css">
-  <link rel="stylesheet" href="../css/operator.css">
-</head>
-<body>
-  <a class="skip-link" href="#main-content">Skip to main content</a>
-  <header>
-    <h1>Hub Operator Portal</h1>
-    <nav aria-label="Main navigation">
-      <ul>
-        <li><a href="../index.html">Home</a></li>
-        <li><a href="operator.html" aria-current="page">Hub Operator</a></li>
-        <li><a href="courier.html">Eco-Transit Crew</a></li>
-        <li><a href="enduser.html">Campus End-User</a></li>
-      </ul>
-    </nav>
-  </header>
-  <main id="main-content" class="container">
-    <div class="page-intro">
-      <div>
-        <p class="eyebrow">MNSU-CampusEco / Central Hub Personnel</p>
-        <h2>Package check-in dashboard</h2>
-        <p>Receive a package, record its measurements, and choose its campus destination.</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hub Operator — MNSU-CampusEco</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/phase2.css" />
+    <link rel="stylesheet" href="../css/operator.css" />
+    <script defer src="../js/vendor/jquery-3.7.1.min.js"></script>
+    <script defer src="../js/models.js"></script>
+    <script defer src="../js/app.js"></script>
+  </head>
+  <body data-page="operator">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <header>
+      <a class="brand" href="../index.html"
+        >MNSU-CampusEco<span>Smarter routes. Greener campus.</span></a
+      >
+      <nav aria-label="Main navigation">
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="operator.html" aria-current="page">Hub Operator</a></li>
+          <li><a href="courier.html">Eco-Transit Crew</a></li>
+          <li><a href="enduser.html">Campus End-User</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main id="main-content" class="container">
+      <div class="page-intro">
+        <div>
+          <p class="eyebrow">Campus logistics / Hub Operator</p>
+          <h1>Hub Operator</h1>
+          <p>Receive, measure, and route packages from the central hub.</p>
+        </div>
+        <span class="phase-label">Phase 2 · Interactive demo</span>
       </div>
-      <span class="phase-label">Phase 1 &middot; Static preview</span>
-    </div>
-    <div class="dashboard-grid">
-      <section class="panel check-in-panel" aria-labelledby="check-in-heading">
-        <h2 id="check-in-heading">Check in a package</h2>
-        <p class="section-description">All fields are required except urgent priority.</p>
-        <!-- Native validation only: submission reloads this page without saving records. -->
-        <form action="operator.html#preview-notice" method="get" aria-describedby="preview-notice">
-          <fieldset>
-            <legend><span class="step-number">01</span> Package details</legend>
-            <div class="form-group">
-              <label for="tracking">Tracking barcode</label>
-              <input id="tracking" name="tracking" type="text" required minlength="8" maxlength="34"
-                pattern="[A-Za-z0-9]{8,34}" placeholder="e.g. 1Z999AA10123456784" spellcheck="false"
-                aria-describedby="tracking-help" title="Enter 8 to 34 letters or digits, with no spaces or symbols.">
-              <small id="tracking-help">Enter 8&ndash;34 letters or digits. No spaces or symbols.</small>
-            </div>
-            <div class="form-group weight-field">
-              <label for="weight">Weight (lb)</label>
-              <input id="weight" name="weight" type="number" required min="0.1" max="150" step="0.1" placeholder="0.1" aria-describedby="weight-help">
-              <small id="weight-help">0.1&ndash;150 lb, in 0.1 lb increments.</small>
-            </div>
-            <p id="dimensions-help" class="field-help">Dimensions in inches: 0.1&ndash;60 per side, in 0.1 inch increments.</p>
-            <div class="dimensions-grid">
+      <p class="demo-note">
+        Shared browser demo · Changes are saved on this device. Use fictional contact details. No
+        real authentication, deliveries, or emails.
+      </p>
+      <noscript
+        ><p class="feedback error">Enable JavaScript to use the interactive portals.</p></noscript
+      >
+      <p id="storage-warning" class="feedback error" hidden></p>
+      <div
+        id="feedback"
+        class="feedback"
+        role="status"
+        aria-live="polite"
+        tabindex="-1"
+        hidden
+      ></div>
+      <div id="operator-stats" class="stats" aria-label="Hub totals"></div>
+      <div class="workspace">
+        <section class="panel">
+          <h2>Check in a package</h2>
+          <p>All fields are required except urgent priority.</p>
+          <form id="checkin-form">
+            <fieldset>
+              <legend>01 · Package details</legend>
               <div class="form-group">
-                <label for="length">Length (in)</label>
-                <input id="length" name="length" type="number" required min="0.1" max="60" step="0.1" placeholder="12" aria-describedby="dimensions-help">
+                <label for="tracking">Tracking barcode or campus number</label
+                ><input
+                  id="tracking"
+                  name="tracking"
+                  type="text"
+                  required
+                  pattern="([A-Za-z0-9]{8,34}|CE-[0-9]{8})"
+                  maxlength="34"
+                  placeholder="CE-20261004"
+                  title="8–34 letters or digits, or CE- followed by 8 digits."
+                />
               </div>
               <div class="form-group">
-                <label for="width">Width (in)</label>
-                <input id="width" name="width" type="number" required min="0.1" max="60" step="0.1" placeholder="8" aria-describedby="dimensions-help">
+                <label for="weight">Weight (lb)</label
+                ><input
+                  id="weight"
+                  name="weight"
+                  type="number"
+                  required
+                  min="0.1"
+                  max="150"
+                  step="0.1"
+                />
               </div>
+              <div class="dimensions-grid">
+                <div class="form-group">
+                  <label for="length">Length (in)</label
+                  ><input
+                    id="length"
+                    name="length"
+                    type="number"
+                    required
+                    min="0.1"
+                    max="60"
+                    step="0.1"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="width">Width (in)</label
+                  ><input
+                    id="width"
+                    name="width"
+                    type="number"
+                    required
+                    min="0.1"
+                    max="60"
+                    step="0.1"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="height">Height (in)</label
+                  ><input
+                    id="height"
+                    name="height"
+                    type="number"
+                    required
+                    min="0.1"
+                    max="60"
+                    step="0.1"
+                  />
+                </div>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>02 · Destination and priority</legend>
               <div class="form-group">
-                <label for="height">Height (in)</label>
-                <input id="height" name="height" type="number" required min="0.1" max="60" step="0.1" placeholder="6" aria-describedby="dimensions-help">
+                <label for="destination">Campus building / locker array</label
+                ><select id="destination" name="destination" required>
+                  <option value="">Select a destination</option>
+                </select>
               </div>
+              <label class="choice"><input id="urgent" type="checkbox" /> Urgent priority</label>
+            </fieldset>
+            <div class="form-actions">
+              <button type="submit">Check in package</button
+              ><button type="reset" class="secondary-button">Clear form</button>
             </div>
-          </fieldset>
-          <fieldset>
-            <legend><span class="step-number">02</span> Destination &amp; priority</legend>
-            <div class="form-group">
-              <label for="destination">Destination building / locker array</label>
-              <select id="destination" name="destination" required aria-describedby="destination-help">
-                <option value="" selected disabled>Select a destination</option>
-                <optgroup label="Residence halls">
-                  <option value="julia-sears-a">Julia Sears Hall &mdash; Locker array A</option>
-                  <option value="preska-a">Preska Residence Community &mdash; Locker array A</option>
-                  <option value="mcelroy-b">McElroy Residence Community &mdash; Locker array B</option>
-                </optgroup>
-                <optgroup label="Academic &amp; campus buildings">
-                  <option value="student-union-a">Centennial Student Union &mdash; Locker array A</option>
-                  <option value="library-a">Memorial Library &mdash; Locker array A</option>
-                  <option value="trafton-b">Trafton Science Center &mdash; Locker array B</option>
-                </optgroup>
-              </select>
-              <small id="destination-help">Sample destinations for this preview; each choice includes a locker array.</small>
-            </div>
-            <label class="priority-choice" for="urgent">
-              <input id="urgent" name="priority" type="checkbox" value="urgent" aria-describedby="priority-help">
-              <span><strong>Mark as urgent</strong><small id="priority-help">Prioritize this package for dispatch. Leave unchecked for standard priority.</small></span>
-            </label>
-          </fieldset>
-          <p id="preview-notice" class="preview-notice"><strong>Preview only.</strong> Submitting checks the fields and reloads this page. No package is saved or added to the sample log. Limits are illustrative for Phase 1.</p>
-          <div class="form-actions">
-            <button type="submit">Check in package (preview)</button>
-            <button class="secondary-button" type="reset">Clear form</button>
+          </form>
+        </section>
+        <aside class="panel">
+          <p class="eyebrow">At the receiving desk</p>
+          <h2>Ready for dispatch</h2>
+          <ol class="guide">
+            <li>
+              <strong>Match the label</strong>
+              <p>Record the tracking barcode. Campus IDs use CE- and eight digits.</p>
+            </li>
+            <li>
+              <strong>Measure and route</strong>
+              <p>Enter weight and dimensions, then choose the building and locker array.</p>
+            </li>
+            <li>
+              <strong>Hand off to the crew</strong>
+              <p>
+                The package appears immediately in the courier queue. Urgent packages sort first,
+                then by destination.
+              </p>
+            </li>
+          </ol>
+        </aside>
+      </div>
+      <section class="panel">
+        <h2>Package tracking log</h2>
+        <div class="toolbar">
+          <div class="form-group">
+            <label for="log-search">Search tracking or destination</label
+            ><input id="log-search" type="search" placeholder="Search packages" />
           </div>
-        </form>
+          <div class="form-group">
+            <label for="log-status">Status</label
+            ><select id="log-status">
+              <option value="">All statuses</option>
+              <option>At hub</option>
+              <option>Loaded</option>
+              <option>En Route</option>
+              <option>Delivered</option>
+            </select>
+          </div>
+        </div>
+        <div
+          class="table-scroll"
+          role="region"
+          aria-label="All packages in this browser demo"
+          tabindex="0"
+        >
+          <table id="package-log">
+            <caption>
+              All packages in this browser demo
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Tracking number</th>
+                <th scope="col">Destination</th>
+                <th scope="col">Weight / dimensions</th>
+                <th scope="col">Priority</th>
+                <th scope="col">Status</th>
+                <th scope="col">Courier</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </section>
-      <aside class="card receiving-guide" aria-labelledby="guide-heading">
-        <p class="eyebrow">At the receiving desk</p>
-        <h2 id="guide-heading">Ready for dispatch</h2>
-        <ol>
-          <li><strong>Match the label</strong><p>Check the tracking barcode against the package label.</p></li>
-          <li><strong>Measure the package</strong><p>Record the weight and all three dimensions, including packaging.</p></li>
-          <li><strong>Confirm the destination</strong><p>Choose the building and locker array before setting priority.</p></li>
-        </ol>
-        <div class="guide-note"><strong>One package at a time</strong><p>Use Clear form to reset all fields before preparing another entry.</p></div>
-      </aside>
-    </div>
-    <section class="panel log-panel" aria-labelledby="log-heading">
-      <div class="section-heading">
-        <div><h2 id="log-heading">Package tracking log</h2><p class="section-description">A snapshot of packages moving through the hub.</p></div>
-        <span class="sample-label">Sample data &middot; 4 packages</span>
-      </div>
-      <div class="table-scroll" role="region" aria-label="Sample package tracking log" tabindex="0">
-        <table>
-          <caption>Illustrative records &mdash; October 5, 2026. This log does not update when the form is submitted.</caption>
-          <thead><tr><th scope="col">Tracking barcode</th><th scope="col">Destination / locker</th><th scope="col">Weight</th><th scope="col">L &times; W &times; H</th><th scope="col">Priority</th><th scope="col">Status</th><th scope="col">Checked in</th></tr></thead>
-          <tbody>
-            <tr><th scope="row" class="barcode">1Z999AA10123456784</th><td>Julia Sears Hall<span class="cell-detail">Array A</span></td><td>4.2 lb</td><td>12 &times; 8 &times; 6 in</td><td><span class="badge urgent-badge">Urgent</span></td><td><span class="badge">At hub</span></td><td><time datetime="2026-10-05T09:15">9:15 AM</time></td></tr>
-            <tr><th scope="row" class="barcode">94001118992238569201</th><td>Memorial Library<span class="cell-detail">Array A</span></td><td>2.8 lb</td><td>10 &times; 7 &times; 4 in</td><td>Standard</td><td><span class="badge">Assigned</span></td><td><time datetime="2026-10-05T09:02">9:02 AM</time></td></tr>
-            <tr><th scope="row" class="barcode">784512345678</th><td>Centennial Student Union<span class="cell-detail">Array A</span></td><td>8.5 lb</td><td>18 &times; 12 &times; 10 in</td><td>Standard</td><td><span class="badge">In transit</span></td><td><time datetime="2026-10-05T08:48">8:48 AM</time></td></tr>
-            <tr><th scope="row" class="barcode">1Z999AA10123456785</th><td>Trafton Science Center<span class="cell-detail">Array B</span></td><td>1.6 lb</td><td>8 &times; 6 &times; 3 in</td><td><span class="badge urgent-badge">Urgent</span></td><td><span class="badge">Delivered</span></td><td><time datetime="2026-10-05T08:30">8:30 AM</time></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-  </main>
-  <footer><p>CIS 483 &mdash; Fall 2026 &mdash; Minnesota State University, Mankato</p></footer>
-</body>
+      <section class="demo-tools">
+        <h2>Demo controls</h2>
+        <p>Start over with three example packages and three carts.</p>
+        <button
+          id="reset-toggle"
+          class="secondary-button"
+          aria-expanded="false"
+          aria-controls="reset-options"
+        >
+          Reset demo…
+        </button>
+        <div id="reset-options" hidden>
+          <p>
+            This removes this demo’s packages, preferences, profile, receipts, and active shift from
+            this browser.
+          </p>
+          <button id="reset-confirm">Restore sample data</button>
+          <button id="reset-cancel" class="secondary-button">Cancel</button>
+        </div>
+      </section>
+    </main>
+    <footer><p>CIS 483 · Fall 2026 · Minnesota State University, Mankato</p></footer>
+  </body>
 </html>

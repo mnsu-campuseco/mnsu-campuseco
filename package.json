@@ -1,0 +1,15 @@
+{
+  "name": "mnsu-campuseco",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Phase 2 campus logistics frontend",
+  "scripts": {
+    "start": "node tools/serve.cjs",
+    "test": "node --test tests/models.test.cjs",
+    "test:browser": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1",
+    "prettier": "3.6.2"
+  }
+}

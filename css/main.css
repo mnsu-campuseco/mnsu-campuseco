@@ -25,15 +25,15 @@
 /* Base: font, colors, and spacing for the whole site */
 body {
   font-family: Arial, Helvetica, sans-serif;
-  background-color: #F7F5FA;
+  background-color: #f7f5fa;
   color: #222222;
   margin: 0;
 }
 
 /* Header: purple bar across the top, items in one row */
 header {
-  background-color: #49176D;
-  color: #FFFFFF;
+  background-color: #49176d;
+  color: #ffffff;
   padding: 16px 32px;
   display: flex;
   justify-content: space-between;
@@ -51,14 +51,14 @@ nav ul {
 
 /* Nav links: white text with no underline */
 nav a {
-  color: #FFFFFF;
+  color: #ffffff;
   text-decoration: none;
   font-weight: bold;
 }
 
 /* Nav links on hover: gold accent with an underline */
 nav a:hover {
-  color: #F2B700;
+  color: #f2b700;
   text-decoration: underline;
 }
 
@@ -70,13 +70,13 @@ h1 {
 
 h2 {
   font-size: 22px;
-  color: #49176D;
+  color: #49176d;
   margin: 24px 0 12px 0;
 }
 
 h3 {
   font-size: 18px;
-  color: #49176D;
+  color: #49176d;
   margin: 16px 0 8px 0;
 }
 
@@ -87,11 +87,11 @@ p {
 
 /* Links in page content: purple, darker on hover */
 a {
-  color: #49176D;
+  color: #49176d;
 }
 
 a:hover {
-  color: #33104D;
+  color: #33104d;
   text-decoration: underline;
 }
 
@@ -105,8 +105,8 @@ a:hover {
 /* Card and panel: white boxes that group related content */
 .card,
 .panel {
-  background-color: #FFFFFF;
-  border: 1px solid #DDDDDD;
+  background-color: #ffffff;
+  border: 1px solid #dddddd;
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 20px;
@@ -114,7 +114,7 @@ a:hover {
 
 /* Panel only: thin gold accent line along the top edge */
 .panel {
-  border-top: 4px solid #F2B700;
+  border-top: 4px solid #f2b700;
 }
 
 /* Card row: lines cards up side by side and wraps them when out of room */
@@ -149,7 +149,7 @@ select {
   width: 100%;
   box-sizing: border-box;
   padding: 8px 10px;
-  border: 2px solid #DDDDDD;
+  border: 2px solid #dddddd;
   border-radius: 4px;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 16px;
@@ -158,13 +158,13 @@ select {
 /* Inputs and dropdowns in focus: purple border shows which field is active */
 input:focus,
 select:focus {
-  border: 2px solid #49176D;
+  border: 2px solid #49176d;
 }
 
 /* Buttons: purple with white text */
 button {
-  background-color: #49176D;
-  color: #FFFFFF;
+  background-color: #49176d;
+  color: #ffffff;
   border: none;
   border-radius: 4px;
   padding: 10px 20px;
@@ -176,21 +176,21 @@ button {
 
 /* Buttons on hover: darker purple */
 button:hover {
-  background-color: #33104D;
+  background-color: #33104d;
 }
 
 /* Tables: full-width tracking logs on a white background */
 table {
   width: 100%;
-  background-color: #FFFFFF;
-  border: 1px solid #DDDDDD;
+  background-color: #ffffff;
+  border: 1px solid #dddddd;
   margin-bottom: 20px;
 }
 
 /* Table header row: purple background with white text */
 th {
-  background-color: #49176D;
-  color: #FFFFFF;
+  background-color: #49176d;
+  color: #ffffff;
   text-align: left;
   padding: 10px 12px;
 }
@@ -198,7 +198,7 @@ th {
 /* Table cells: padding and a light border */
 td {
   padding: 10px 12px;
-  border: 1px solid #DDDDDD;
+  border: 1px solid #dddddd;
 }
 
 /* Footer: centered, muted text at the bottom of every page */
@@ -207,5 +207,5 @@ footer {
   color: #666666;
   padding: 24px 32px;
   margin-top: 40px;
-  border-top: 1px solid #DDDDDD;
+  border-top: 1px solid #dddddd;
 }
