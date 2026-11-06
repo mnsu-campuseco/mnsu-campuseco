@@ -1,0 +1,137 @@
+/* MNSU-CampusEco — Phase 3 additions.
+   Extends the shared theme rather than replacing it: the colours, spacing and
+   class names below follow the ones published in css/main.css for Phase 1. */
+
+:root {
+  --eco-purple: #49176d;
+  --eco-purple-dark: #33104d;
+  --eco-gold: #f2b700;
+  --eco-surface: #f7f5fa;
+}
+
+/* Banner marking a page as the server-backed version */
+.phase-banner {
+  background: #f1ecf7;
+  border-left: 4px solid var(--eco-purple);
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  margin-bottom: 1.25rem;
+}
+
+/* Header row: title on the left, nav on the right, stacking on narrow screens */
+.header-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+/* Small status chip */
+.pill {
+  display: inline-block;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  background: #e6e0ee;
+  color: var(--eco-purple-dark);
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+.pill.urgent {
+  background: var(--eco-gold);
+  color: #3a2a00;
+  font-weight: 600;
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--eco-purple);
+  line-height: 1.1;
+}
+
+.hint {
+  font-size: 0.88rem;
+  color: #5a5566;
+}
+
+/* Three dimension inputs side by side, stacking when there is no room */
+.dimension-row,
+.log-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.dimension-row .form-group,
+.log-filters .form-group {
+  flex: 1 1 8rem;
+}
+
+/* Live telemetry list */
+.cart-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.cart-list li {
+  padding: 0.5rem 0.65rem;
+  border-left: 3px solid #cfc6da;
+  margin-bottom: 0.4rem;
+  background: var(--eco-surface);
+  border-radius: 0 4px 4px 0;
+}
+.cart-list li.low {
+  border-left-color: #b3261e;
+}
+
+/* Delivery audit trail */
+.timeline {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-left: 2px solid #cfc6da;
+}
+.timeline li {
+  position: relative;
+  padding: 0 0 0.9rem 1.1rem;
+}
+.timeline li::before {
+  content: '';
+  position: absolute;
+  left: -0.42rem;
+  top: 0.35rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: var(--eco-purple);
+}
+.timeline-time {
+  display: block;
+  font-size: 0.82rem;
+  color: #5a5566;
+}
+
+.portal-links a {
+  display: inline-block;
+  padding: 0.2rem 0;
+}
+
+/* Mobile first: the couriers read this on a phone in the field. */
+@media (max-width: 600px) {
+  .phase-banner {
+    font-size: 0.92rem;
+  }
+  .stat-value {
+    font-size: 1.3rem;
+  }
+  .cart-list li {
+    font-size: 0.9rem;
+  }
+  /* Wide tables scroll inside their panel rather than widening the page. */
+  .panel table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}

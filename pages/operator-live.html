@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="campusEco">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hub Operator (Full Stack) — MNSU-CampusEco</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/phase2.css" />
+    <link rel="stylesheet" href="../css/phase3.css" />
+    <link rel="stylesheet" href="../css/operator.css" />
+  </head>
+
+  <body data-page="operator-live">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header>
+      <div class="container header-bar">
+        <h1>MNSU-CampusEco</h1>
+        <nav aria-label="Primary">
+          <ul>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="operator-live.html" aria-current="page">Hub Operator</a></li>
+            <li><a href="courier-live.html">Eco-Transit Crew</a></li>
+            <li><a href="enduser-live.html">Campus End-User</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content" class="container">
+      <p class="phase-banner">
+        <strong>Phase 3 &mdash; full stack.</strong> Every figure on this page is read from
+        MySQL over AJAX. Nothing is stored in the browser.
+      </p>
+
+      <!-- ---------------------------------------------------------- -->
+      <section class="panel" ng-controller="AuthCtrl">
+        <h2>Sign in</h2>
+
+        <div ng-if="user">
+          <p>
+            Signed in as <strong>{{ user.full_name }}</strong>
+            <span class="pill">{{ user.role }}</span>
+          </p>
+          <button type="button" ng-click="signOut()">Sign out</button>
+        </div>
+
+        <form ng-submit="signIn()" ng-if="!user" novalidate>
+          <div class="form-group">
+            <label for="username">Username</label>
+            <!-- ng-model is the two-way binding: the field and the model
+                 variable are the same value, with no DOM reads. -->
+            <input id="username" type="text" ng-model="credentials.username" required />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input id="password" type="password" ng-model="credentials.password" required />
+          </div>
+          <button type="submit" ng-disabled="busy">
+            {{ busy ? 'Signing in…' : 'Sign in' }}
+          </button>
+          <p class="feedback error" ng-if="error" role="alert">{{ error }}</p>
+          <p class="hint">Demo account: <code>operator1</code> / <code>CampusEco2026</code></p>
+        </form>
+      </section>
+
+      <!-- ---------------------------------------------------------- -->
+      <div ng-controller="OperatorCtrl">
+        <div class="stats" aria-label="Hub totals">
+          <div class="stat"><span class="stat-value">{{ totals.total }}</span> packages</div>
+          <div class="stat"><span class="stat-value">{{ totals.at_hub }}</span> at hub</div>
+          <div class="stat"><span class="stat-value">{{ totals.in_transit }}</span> in transit</div>
+          <div class="stat"><span class="stat-value">{{ totals.delivered }}</span> delivered</div>
+          <div class="stat"><span class="stat-value">{{ totals.urgent_open }}</span> urgent open</div>
+        </div>
+
+        <div class="card-row">
+          <section class="panel">
+            <h2>Check a package in</h2>
+
+            <form ng-submit="checkIn()" novalidate>
+              <div class="form-group">
+                <label for="tracking">Tracking number</label>
+                <input
+                  id="tracking"
+                  type="text"
+                  ng-model="form.tracking"
+                  placeholder="CE-20261004"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="weight">Weight (kg)</label>
+                <input id="weight" type="number" step="0.1" min="0.1" max="150"
+                       ng-model="form.weight" required />
+              </div>
+
+              <div class="dimension-row">
+                <div class="form-group">
+                  <label for="length">Length (cm)</label>
+                  <input id="length" type="number" step="0.1" min="0.1" max="60"
+                         ng-model="form.length" required />
+                </div>
+                <div class="form-group">
+                  <label for="width">Width (cm)</label>
+                  <input id="width" type="number" step="0.1" min="0.1" max="60"
+                         ng-model="form.width" required />
+                </div>
+                <div class="form-group">
+                  <label for="height">Height (cm)</label>
+                  <input id="height" type="number" step="0.1" min="0.1" max="60"
+                         ng-model="form.height" required />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="destination">Campus destination</label>
+                <!-- Options come from the destinations table, not from the markup. -->
+                <select id="destination" ng-model="form.destination" required
+                        ng-options="d.name as d.name for d in destinations">
+                  <option value="">Select a destination</option>
+                </select>
+              </div>
+
+              <label class="choice">
+                <input type="checkbox" ng-model="form.urgent" /> Urgent priority
+              </label>
+
+              <button type="submit" ng-disabled="busy">
+                {{ busy ? 'Saving…' : 'Check in' }}
+              </button>
+
+              <p class="feedback" ng-if="message" role="status">{{ message }}</p>
+              <p class="feedback error" ng-if="error" role="alert">{{ error }}</p>
+            </form>
+          </section>
+
+          <section class="panel">
+            <h2>Shared tracking log</h2>
+
+            <div class="log-filters">
+              <div class="form-group">
+                <label for="log-search">Search</label>
+                <!-- Typing re-queries the server; the list follows the input. -->
+                <input id="log-search" type="search" ng-model="filters.search"
+                       placeholder="Tracking or destination" />
+              </div>
+              <div class="form-group">
+                <label for="log-status">Status</label>
+                <select id="log-status" ng-model="filters.status">
+                  <option value="">All statuses</option>
+                  <option ng-repeat="s in statuses" value="{{ s }}">{{ s }}</option>
+                </select>
+              </div>
+            </div>
+
+            <table>
+              <caption>
+                Packages currently known to the hub, urgent first
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Tracking</th>
+                  <th scope="col">Destination</th>
+                  <th scope="col">Size</th>
+                  <th scope="col">Priority</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Courier</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="p in packages">
+                  <th scope="row">{{ p.tracking }}</th>
+                  <td>{{ p.destination }}</td>
+                  <td>{{ p.weight }} kg · {{ p.dimensions.join(' × ') }} cm</td>
+                  <td>
+                    <span class="pill" ng-class="{ urgent: p.urgent }">
+                      {{ p.urgent ? 'Urgent' : 'Standard' }}
+                    </span>
+                  </td>
+                  <td>{{ p.status }}</td>
+                  <td>{{ p.courier || 'Unassigned' }}</td>
+                </tr>
+                <tr ng-if="!packages.length">
+                  <td colspan="6">No packages match those filters.</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="container">
+        <p><small>&copy; 2026 MNSU-CampusEco &middot; CIS 483 Phase 3</small></p>
+      </div>
+    </footer>
+
+    <script src="../js/vendor/angular.min.js"></script>
+    <script src="../js/angular-app.js"></script>
+  </body>
+</html>

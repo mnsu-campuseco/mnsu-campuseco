@@ -59,23 +59,45 @@
         </p>
         <div id="home-stats" class="stats"></div>
       </section>
+      <section class="panel">
+        <h2>Phase 3 &mdash; full-stack portals</h2>
+        <p>
+          Backed by MySQL through a PHP API, with AngularJS two-way binding and live cart
+          telemetry from a Node runtime. Every business rule is enforced on the server.
+          These need the servers running &mdash; see the README.
+        </p>
+      </section>
       <div class="card-row portal-cards">
         <section class="card">
           <h2>Hub Operator</h2>
           <p>Check in incoming packages, assign destinations, and review the hub log.</p>
-          <a class="button-link" href="pages/operator.html">Open portal →</a>
+          <a class="button-link" href="pages/operator-live.html">Open portal →</a>
         </section>
         <section class="card">
           <h2>Eco-Transit Crew</h2>
-          <p>Start a shift, claim packages, update milestones, and report battery levels.</p>
-          <a class="button-link" href="pages/courier.html">Open portal →</a>
+          <p>Start a shift, claim packages, update milestones, and watch live cart battery.</p>
+          <a class="button-link" href="pages/courier-live.html">Open portal →</a>
         </section>
         <section class="card">
           <h2>Campus End-User</h2>
-          <p>Track deliveries, register a demo profile, save preferences, and sign for receipt.</p>
-          <a class="button-link" href="pages/enduser.html">Open portal →</a>
+          <p>Track a package against its audit trail, sign for receipt, and see carbon savings.</p>
+          <a class="button-link" href="pages/enduser-live.html">Open portal →</a>
         </section>
       </div>
+
+      <section class="panel">
+        <h2>Phase 2 &mdash; browser-only portals</h2>
+        <p>
+          The same three workflows backed by <code>localStorage</code> instead of a server.
+          Kept so the two phases can be compared side by side: identical screens, but the
+          rules live in the browser rather than in the database.
+        </p>
+        <p class="portal-links">
+          <a href="pages/operator.html">Hub Operator</a> &middot;
+          <a href="pages/courier.html">Eco-Transit Crew</a> &middot;
+          <a href="pages/enduser.html">Campus End-User</a>
+        </p>
+      </section>
       <section class="panel">
         <h2>Try the complete journey</h2>
         <ol class="guide">

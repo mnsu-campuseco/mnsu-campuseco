@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="campusEco">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eco-Transit Crew (Full Stack) — MNSU-CampusEco</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/phase2.css" />
+    <link rel="stylesheet" href="../css/phase3.css" />
+    <link rel="stylesheet" href="../css/courier.css" />
+  </head>
+
+  <body data-page="courier-live">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header>
+      <div class="container header-bar">
+        <h1>MNSU-CampusEco</h1>
+        <nav aria-label="Primary">
+          <ul>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="operator-live.html">Hub Operator</a></li>
+            <li><a href="courier-live.html" aria-current="page">Eco-Transit Crew</a></li>
+            <li><a href="enduser-live.html">Campus End-User</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content" class="container">
+      <p class="phase-banner">
+        <strong>Phase 3 &mdash; full stack.</strong> Claim rules and milestone order are
+        enforced by the server. Cart battery readings stream from the Node telemetry runtime.
+      </p>
+
+      <section class="panel" ng-controller="AuthCtrl">
+        <h2>Sign in</h2>
+        <div ng-if="user">
+          <p>
+            Signed in as <strong>{{ user.full_name }}</strong>
+            <span class="pill">{{ user.role }}</span>
+          </p>
+          <button type="button" ng-click="signOut()">Sign out</button>
+        </div>
+        <form ng-submit="signIn()" ng-if="!user" novalidate>
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input id="username" type="text" ng-model="credentials.username" required />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input id="password" type="password" ng-model="credentials.password" required />
+          </div>
+          <button type="submit" ng-disabled="busy">{{ busy ? 'Signing in…' : 'Sign in' }}</button>
+          <p class="feedback error" ng-if="error" role="alert">{{ error }}</p>
+          <p class="hint">Demo account: <code>courier1</code> / <code>CampusEco2026</code></p>
+        </form>
+      </section>
+
+      <div ng-controller="CourierCtrl">
+        <div class="card-row">
+          <section class="panel">
+            <h2>Your shift</h2>
+            <div class="form-group">
+              <label for="driver-id">Driver ID</label>
+              <input id="driver-id" type="text" ng-model="shift.courier_id"
+                     placeholder="ECO-0417" pattern="ECO-[0-9]{4}" />
+            </div>
+            <div class="form-group">
+              <label for="cart">Electric cart</label>
+              <select id="cart" ng-model="shift.cart_id"
+                      ng-options="v.id as (v.id + ' · ' + v.route + ' · ' + v.battery + '%') for v in vehicles">
+                <option value="">Select a cart</option>
+              </select>
+            </div>
+            <p class="hint">
+              A cart needs at least {{ threshold }}% battery to claim new work. The server
+              refuses the claim regardless of what this page allows.
+            </p>
+            <p class="feedback" ng-if="message" role="status">{{ message }}</p>
+            <p class="feedback error" ng-if="error" role="alert">{{ error }}</p>
+          </section>
+
+          <section class="panel">
+            <h2>Live cart telemetry</h2>
+            <p class="hint">Polled from the Node runtime on port 3000, every 4 seconds.</p>
+            <ul class="cart-list">
+              <li ng-repeat="c in live" ng-class="{ low: c.lowBattery }">
+                <strong>{{ c.id }}</strong> &middot; {{ c.battery }}%
+                &middot; {{ c.stop }} &rarr; {{ c.nextStop }}
+                &middot; {{ c.speedKph }} km/h
+                <span class="pill urgent" ng-if="c.lowBattery">below threshold</span>
+              </li>
+              <li ng-if="!live.length">Telemetry runtime not reachable. Start it with
+                <code>node telemetry/server.js</code>.</li>
+            </ul>
+          </section>
+        </div>
+
+        <section class="panel">
+          <h2>Delivery queue</h2>
+          <table>
+            <caption>Open deliveries, urgent first</caption>
+            <thead>
+              <tr>
+                <th scope="col">Tracking</th>
+                <th scope="col">Destination</th>
+                <th scope="col">Priority</th>
+                <th scope="col">Status</th>
+                <th scope="col">Courier</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="p in queue">
+                <th scope="row">{{ p.tracking }}</th>
+                <td>{{ p.destination }}</td>
+                <td>
+                  <span class="pill" ng-class="{ urgent: p.urgent }">
+                    {{ p.urgent ? 'Urgent' : 'Standard' }}
+                  </span>
+                </td>
+                <td>{{ p.status }}</td>
+                <td>{{ p.courier || 'Unassigned' }}</td>
+                <td>
+                  <button type="button" ng-if="!p.courier" ng-click="claim(p)">Claim</button>
+                  <button type="button" ng-if="p.courier && p.status === 'At hub'"
+                          ng-click="advance(p, 'Loaded')">Mark Loaded</button>
+                  <button type="button" ng-if="p.status === 'Loaded'"
+                          ng-click="advance(p, 'En Route')">Mark En Route</button>
+                  <button type="button" ng-if="p.status === 'En Route'"
+                          ng-click="advance(p, 'Delivered')">Mark Delivered</button>
+                </td>
+              </tr>
+              <tr ng-if="!queue.length">
+                <td colspan="6">No open deliveries.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="form-group">
+            <label for="milestone-note">Note for the next milestone (optional)</label>
+            <input id="milestone-note" type="text" ng-model="note" maxlength="160"
+                   placeholder="e.g. Left at the Array A locker" />
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <div class="container">
+        <p><small>&copy; 2026 MNSU-CampusEco &middot; CIS 483 Phase 3</small></p>
+      </div>
+    </footer>
+
+    <script src="../js/vendor/angular.min.js"></script>
+    <script src="../js/angular-app.js"></script>
+  </body>
+</html>

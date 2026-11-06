@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="campusEco">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Campus End-User (Full Stack) — MNSU-CampusEco</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/phase2.css" />
+    <link rel="stylesheet" href="../css/phase3.css" />
+    <link rel="stylesheet" href="../css/enduser.css" />
+  </head>
+
+  <body data-page="enduser-live">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header>
+      <div class="container header-bar">
+        <h1>MNSU-CampusEco</h1>
+        <nav aria-label="Primary">
+          <ul>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="operator-live.html">Hub Operator</a></li>
+            <li><a href="courier-live.html">Eco-Transit Crew</a></li>
+            <li><a href="enduser-live.html" aria-current="page">Campus End-User</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content" class="container" ng-controller="EndUserCtrl">
+      <p class="phase-banner">
+        <strong>Phase 3 &mdash; full stack.</strong> The delivery history below is the
+        <code>transit_events</code> audit trail, read straight from MySQL.
+      </p>
+
+      <div class="card-row">
+        <section class="panel">
+          <h2>Track a package</h2>
+
+          <form ng-submit="track()" novalidate>
+            <div class="form-group">
+              <label for="tracking-lookup">Tracking number</label>
+              <input id="tracking-lookup" type="text" ng-model="lookup.tracking" required />
+            </div>
+            <button type="submit">Track</button>
+          </form>
+
+          <p class="feedback error" ng-if="error" role="alert">{{ error }}</p>
+          <p class="feedback" ng-if="message" role="status">{{ message }}</p>
+
+          <div ng-if="package">
+            <h3>{{ package.tracking }}</h3>
+            <dl class="package-summary">
+              <dt>Destination</dt>
+              <dd>{{ package.destination }}</dd>
+              <dt>Status</dt>
+              <dd><strong>{{ package.status }}</strong></dd>
+              <dt>Priority</dt>
+              <dd>{{ package.urgent ? 'Urgent' : 'Standard' }}</dd>
+              <dt>Size</dt>
+              <dd>{{ package.weight }} kg &middot; {{ package.dimensions.join(' × ') }} cm</dd>
+              <dt>Courier</dt>
+              <dd>{{ package.courier || 'Not yet assigned' }}</dd>
+            </dl>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Delivery history</h2>
+          <ol class="timeline" ng-if="history.length">
+            <li ng-repeat="e in history">
+              <strong>{{ e.status }}</strong>
+              <span class="timeline-time">{{ e.at }}</span>
+              <span ng-if="e.note"> &mdash; {{ e.note }}</span>
+            </li>
+          </ol>
+          <p ng-if="!history.length">Track a package to see its history.</p>
+        </section>
+      </div>
+
+      <div class="card-row">
+        <section class="panel">
+          <h2>Sign for your delivery</h2>
+
+          <p ng-if="package && package.receipt">
+            Signed by <strong>{{ package.receipt.name }}</strong> on {{ package.receipt.at }}.
+          </p>
+
+          <form ng-submit="sign()" ng-if="package && !package.receipt" novalidate>
+            <div class="form-group">
+              <label for="signature">Your full name</label>
+              <input id="signature" type="text" ng-model="signature.name" minlength="2" required />
+            </div>
+            <button type="submit" ng-disabled="package.status !== 'Delivered'">
+              Confirm receipt
+            </button>
+            <p class="hint" ng-if="package.status !== 'Delivered'">
+              Available once the package reaches Delivered. The server refuses an early
+              signature, and the database refuses a second one.
+            </p>
+          </form>
+        </section>
+
+        <section class="panel">
+          <h2>Carbon savings</h2>
+          <div ng-if="metrics">
+            <div class="stats">
+              <div class="stat">
+                <span class="stat-value">{{ metrics.deliveries }}</span> deliveries
+              </div>
+              <div class="stat"><span class="stat-value">{{ metrics.km }}</span> km by cart</div>
+              <div class="stat">
+                <span class="stat-value">{{ metrics.co2_kg }}</span> kg CO<sub>2</sub> avoided
+              </div>
+            </div>
+            <p ng-if="metrics.package">
+              This delivery alone avoided
+              <strong>{{ metrics.package.co2_kg }} kg</strong> over
+              {{ metrics.package.km }} km.
+            </p>
+            <p class="hint">
+              Illustrative: {{ metrics.rate }} kg of CO<sub>2</sub> avoided per km, computed
+              from the packages table rather than kept as a running total.
+            </p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <div class="container">
+        <p><small>&copy; 2026 MNSU-CampusEco &middot; CIS 483 Phase 3</small></p>
+      </div>
+    </footer>
+
+    <script src="../js/vendor/angular.min.js"></script>
+    <script src="../js/angular-app.js"></script>
+  </body>
+</html>
