@@ -33,9 +33,9 @@ const ROUTES = {
 };
 
 const carts = [
-  { id: 'cart-01', route: 'North loop', battery: 88, stopIndex: 0, speedKph: 0, updated: null },
-  { id: 'cart-02', route: 'South loop', battery: 64, stopIndex: 1, speedKph: 0, updated: null },
-  { id: 'cart-03', route: 'Residence halls', battery: 19, stopIndex: 0, speedKph: 0, updated: null },
+  { id: 'cart-01', route: 'North loop', battery: 88, stopIndex: 0, speedKph: 0, charging: false, updated: null },
+  { id: 'cart-02', route: 'South loop', battery: 64, stopIndex: 1, speedKph: 0, charging: false, updated: null },
+  { id: 'cart-03', route: 'Residence halls', battery: 19, stopIndex: 0, speedKph: 0, charging: false, updated: null },
 ];
 
 const alerts = [];
@@ -50,6 +50,7 @@ function snapshot() {
     nextStop: ROUTES[c.id][(c.stopIndex + 1) % ROUTES[c.id].length],
     speedKph: c.speedKph,
     lowBattery: c.battery < LOW_BATTERY,
+    charging: c.charging,
     updated: c.updated,
   }));
 }
@@ -70,10 +71,18 @@ setInterval(() => {
   const now = new Date().toISOString();
 
   for (const cart of carts) {
-    const moving = cart.battery > 5;
-    cart.speedKph = moving ? Number((6 + Math.random() * 10).toFixed(1)) : 0;
-    if (moving) {
-      cart.battery = Math.max(0, cart.battery - Math.random() * 0.4);
+    // A cart that runs low returns to the charging bay and comes back up, so a
+    // demo left running for an hour still shows a working fleet rather than
+    // three flat batteries. Drain is ~0.9%/min; charging is ~6%/min.
+    if (cart.battery <= 12) cart.charging = true;
+    if (cart.battery >= 95) cart.charging = false;
+
+    if (cart.charging) {
+      cart.battery = Math.min(100, cart.battery + 0.2);
+      cart.speedKph = 0;
+    } else {
+      cart.battery = Math.max(0, cart.battery - Math.random() * 0.06);
+      cart.speedKph = Number((6 + Math.random() * 10).toFixed(1));
       if (Math.random() < 0.25) {
         cart.stopIndex = (cart.stopIndex + 1) % ROUTES[cart.id].length;
       }
