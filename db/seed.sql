@@ -8,13 +8,21 @@
 
 USE campuseco;
 
+-- The destination names contain em-dashes. Without this line the mysql client
+-- on Windows hands the file's bytes to the server tagged as the console code
+-- page, and every em-dash is stored double-encoded as "ÔÇö". Declaring the
+-- connection charset here fixes it whatever client loads the file.
+SET NAMES utf8mb4;
+
+-- DELETE rather than TRUNCATE so the campuseco_app account can reload this file;
+-- TRUNCATE needs the DROP privilege, which the application user does not have.
 SET FOREIGN_KEY_CHECKS = 0;
-TRUNCATE TABLE receipts;
-TRUNCATE TABLE transit_events;
-TRUNCATE TABLE packages;
-TRUNCATE TABLE couriers;
-TRUNCATE TABLE vehicles;
-TRUNCATE TABLE destinations;
+DELETE FROM receipts;
+DELETE FROM transit_events;
+DELETE FROM packages;
+DELETE FROM couriers;
+DELETE FROM vehicles;
+DELETE FROM destinations;
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- Campus destinations — the six from js/models.js
