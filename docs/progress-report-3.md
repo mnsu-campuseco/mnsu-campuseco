@@ -73,8 +73,24 @@ The Node runtime was checked separately: ten concurrent requests all returned
 200, the SSE stream pushed updates every two seconds, and the background task
 raised its own low-battery alert when a cart crossed the threshold.
 
+These checks are now automated and repeatable as `npm run test:stack`
+(`tools/smoke-test.cjs`): **55 checks, all passing**, grouped by the four
+components. It runs one complete delivery over HTTP and then attempts every rule
+Phase 2 enforced in the browser, with the browser removed entirely — so it tests
+the server's decisions rather than the client's. A Phase 2-style test that only
+loaded `js/models.js` would prove nothing about Phase 3, because the rules no
+longer live there.
+
 The Phase 2 model suite still passes (`npm test`, 4/4), and the Phase 2 browser
 suite is unchanged because the Phase 2 pages were not modified.
+
+Two supporting scripts were added for the presentation. `npm run stack` starts
+PHP and Node together, but checks both ports first: a server left running from
+an earlier session keeps its port, the replacement dies with `EADDRINUSE`, and
+the browser carries on talking to the stale process, which looks like a working
+stack until the data is wrong. `npm run db:reset` reloads the seed and then
+verifies its own text encoding, because the em-dash defect below produced no
+error of any kind.
 
 ## 3 Problems and next steps
 
@@ -85,7 +101,8 @@ suite is unchanged because the Phase 2 pages were not modified.
 | Cart batteries drained about 12% per minute, so a runtime left running before a demo showed three flat carts.                                                    | Drain reduced to roughly 0.9% per minute, with a charging cycle so the fleet recovers and still crosses the threshold often enough to demonstrate. |
 | Apache/PHP and the Node runtime are different origins, so the browser blocks the telemetry request by default.                                                   | The Node runtime sends `Access-Control-Allow-Origin`; the allowed origin is configurable through `CAMPUSECO_ORIGIN`.                                |
 | The API returns 4xx codes for rule violations, which the browser console logs in red on error paths.                                                             | This is correct REST behaviour rather than a JavaScript error, and is documented in the README so it is not mistaken for a defect.                 |
-| Phase 3 has no automated browser suite of its own; verification was manual against the running stack.                                                            | Port the Playwright suite to the full-stack pages during Production Verification, with the database reset between runs.                             |
+| Phase 3 verification was manual against the running stack, so nothing stopped a regression between runs.                                                         | Automated as `npm run test:stack` — 55 checks over HTTP across all four components. A Playwright suite driving the pages themselves is still outstanding and is planned for Production Verification. |
+| A stale server from an earlier session kept its port, so the replacement died with `EADDRINUSE` while the browser kept talking to the old process.               | `npm run stack` checks both ports before starting anything, names the holding PID, and starts nothing rather than leaving half a stack up.          |
 | Rules are duplicated — once in `js/models.js` for instant feedback, once on the server.                                                                          | Deliberate: the browser copy is a convenience and the server is authoritative. Any future rule change must be made in both places.                 |
 
 ### Planned work for Production Verification (Nov 10 – Nov 29)
@@ -111,7 +128,12 @@ submission and correct anything that does not match.
 
 ## 5 Submission
 
-Phase 3 is due **Monday, November 9, 2026**, with Technical Presentation 2
-delivered in class. One member submits the report, presentation materials and
-the repository link through D2L. Setup instructions for a marker starting from
-an empty database are in the README.
+The Phase 3 implementation is complete and tagged `phase-3`. The **Phase 3
+In-Class Technical Presentation is Monday, November 16, 2026**, covering the four
+required components: the Angular frontend, the Node.js backend, the PHP backend
+server, and the relational database design and implementation.
+
+Presentation materials are `docs/Presentation2.pptx` (13 slides) with a
+ten-minute walkthrough in `docs/demo-runbook.md`. One member submits this report,
+the presentation materials and the repository link through D2L. Setup
+instructions for a marker starting from an empty database are in the README.

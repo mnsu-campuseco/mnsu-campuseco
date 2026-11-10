@@ -2,11 +2,14 @@
   "name": "mnsu-campuseco",
   "version": "2.0.0",
   "private": true,
-  "description": "Phase 2 campus logistics frontend",
+  "description": "Campus logistics platform — AngularJS frontend, Node telemetry runtime, PHP API, MySQL",
   "scripts": {
     "start": "node tools/serve.cjs",
+    "stack": "node tools/stack.cjs",
+    "db:reset": "node tools/reset-db.cjs",
     "test": "node --test tests/models.test.cjs",
-    "test:browser": "playwright test"
+    "test:browser": "playwright test",
+    "test:stack": "node tools/smoke-test.cjs"
   },
   "devDependencies": {
     "@playwright/test": "1.56.1",

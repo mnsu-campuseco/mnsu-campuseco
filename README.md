@@ -85,7 +85,21 @@ These are demonstration accounts for a local marking environment, not secrets.
 
 ## 3. Start both servers
 
-Two terminals:
+```sh
+npm run stack
+```
+
+That starts PHP on `:8080` and the Node telemetry runtime on `:3000`, and prints
+the four page links. Open **http://127.0.0.1:8080**. Ctrl-C stops both.
+
+It checks both ports before starting anything. A server left running from an
+earlier session keeps its port, and the replacement dies with `EADDRINUSE` while
+the browser carries on talking to the stale process — which looks exactly like a
+working stack until the data is wrong. If a port is held, the script names the
+PID and the `taskkill` command and starts nothing, rather than leaving half a
+stack up.
+
+To start them by hand instead, in two terminals:
 
 ```sh
 php -S 127.0.0.1:8080 -t .
@@ -95,8 +109,35 @@ php -S 127.0.0.1:8080 -t .
 node telemetry/server.js
 ```
 
-Open **http://127.0.0.1:8080**. If the database password differs from the
-default in `db/schema.sql`, set `CAMPUSECO_DB_PASS` before starting PHP.
+If the database password differs from the default in `db/schema.sql`, set
+`CAMPUSECO_DB_PASS` before starting PHP. `npm run stack` also honours
+`CAMPUSECO_PHP`, `CAMPUSECO_PHP_PORT` and `CAMPUSECO_NODE_PORT`.
+
+## 4. Verify the stack
+
+```sh
+npm run test:stack
+```
+
+55 checks against the running stack, covering all four Phase 3 components: the
+three AngularJS pages are served and bootstrap, the Node runtime answers and
+survives ten concurrent requests, the PHP API authenticates and validates, and
+the database refuses what it should refuse. It runs one complete delivery
+end to end and then attempts every rule violation Phase 2 enforced in the
+browser — with the browser removed from the picture.
+
+Reload the demo data at any time:
+
+```sh
+npm run db:reset
+```
+
+Run that before a demo. Testing leaves extra packages behind, and the reset puts
+`cart-03` back below the 20% battery threshold so the claim rule can be shown
+being refused. The reset verifies its own text encoding afterwards, because
+loading the seed without `--default-character-set=utf8mb4` silently stores every
+em-dash double-encoded and then every destination lookup fails for no visible
+reason.
 
 ## Try a complete delivery, server-backed
 
@@ -116,6 +157,28 @@ Seed examples: `CE-20261001` is en route, `CE-20261002` is delivered and ready
 for sign-off, `CE-20261003` is unclaimed. Reload demo data at any time with
 `mysql -u campuseco_app -p --default-character-set=utf8mb4 campuseco < db/seed.sql`.
 
+## The four presentation components
+
+The Phase 3 In-Class Technical Presentation (Monday, November 16) asks each group
+to address four components. Where each one lives:
+
+| # | Component                                       | Where it is                                                        | What to show                                                                                           |
+| - | ----------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| 1 | **Frontend** — Angular or React                 | `js/angular-app.js`, `js/vendor/angular.min.js`, `pages/*-live.html` | AngularJS 1.8.3. Module `campusEco`, two factories, four controllers. `ng-model`, `ng-repeat`, `ng-options` |
+| 2 | **Node.js backend** — Node server               | `telemetry/server.js`                                              | Zero dependencies. Cart snapshots, an SSE stream, parsed route streams, a dispatch alert queue, a background battery task |
+| 3 | **Backend server** — PHP or C#                  | `api/*.php` (11 files)                                             | PHP 8.3 + PDO. Nine endpoints, bcrypt auth, role guards, transactions with `FOR UPDATE`                 |
+| 4 | **Relational database** — design and implementation | `db/schema.sql`, `db/seed.sql`                                  | MySQL 8.0. Eight normalised tables, `UNIQUE`/`CHECK`/FK constraints enforcing the business rules        |
+
+**How they work together** — one claim traces through all four. The courier
+picks a cart in the AngularJS portal (1), whose live battery reading came from
+the Node runtime (2). Submitting posts JSON to `api/claims.php` (3), which opens
+a transaction, locks the cart and package rows `FOR UPDATE`, re-checks the
+battery against the database's own value, and writes the assignment plus an
+audit row (4). Two couriers racing for the same package resolve to one winner,
+because the decision is made in the database and not in either browser.
+
+A ten-minute walkthrough is in [`docs/demo-runbook.md`](docs/demo-runbook.md).
+
 ## Phase 3 requirement map
 
 | Requirement                           | Implementation                                                                                                              |
@@ -125,6 +188,7 @@ for sign-off, `CE-20261003` is unclaimed. Reload demo data at any time with
 | 3.3 AngularJS data binding            | `ng-model` on every form field, `ng-repeat` for logs and queues, `ng-options` for server-supplied dropdowns                 |
 | 3.4 PHP relational engine             | `api/*.php` over MySQL: prepared statements, bcrypt, role checks, transactions with `FOR UPDATE`                            |
 | Normalisation                         | `destinations`, `couriers`, `vehicles`, `transit_events` and `receipts` split out of `packages` (`db/schema.sql`)            |
+| Verification                          | `npm run test:stack` — 55 checks across all four components against the running stack (`tools/smoke-test.cjs`)              |
 | Progress Report 3                     | `docs/progress-report-3.md`                                                                                                 |
 
 ## API endpoints
