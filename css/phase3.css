@@ -43,12 +43,13 @@
   font-weight: 600;
 }
 
+.stats .stat .stat-value,
 .stat-value {
   display: block;
-  font-size: 1.6rem;
+  font-size: 1.9rem;
   font-weight: 700;
   color: var(--eco-purple);
-  line-height: 1.1;
+  line-height: 1.15;
 }
 
 .hint {
@@ -115,6 +116,18 @@
 .portal-links a {
   display: inline-block;
   padding: 0.2rem 0;
+}
+
+/* A six-column log does not fit beside another panel. Let any wide table
+   scroll inside its own panel rather than crushing its columns. */
+.panel table {
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+}
+.panel table th,
+.panel table td {
+  white-space: nowrap;
 }
 
 /* Mobile first: the couriers read this on a phone in the field. */
