@@ -126,8 +126,15 @@ transaction, locked the rows `FOR UPDATE`, re-checked the battery against the
 database's own value, and wrote the assignment. Two couriers racing resolve to
 one winner because the database decides.
 
-Advance **Loaded → En Route → Delivered**. Then try to skip a step, or use
-driver `ECO-9999`. Both refused by `api/milestones.php`.
+Advance **Loaded → En Route → Delivered**.
+
+> Do **not** try to skip a step on screen. The portal only ever renders the one
+> legal next button — after claiming it reads "Mark Loaded", then "Mark En
+> Route", then "Mark Delivered" — so there is nothing to click and you will
+> look like you have lost your place. Say instead: *"the portal only offers the
+> next legal step, and the server enforces the same order independently."* The
+> proof is on slide 11 and in `npm run test:stack`, and the answers below cover
+> it if anyone pushes.
 
 **Tab 4 — Campus End-User.** Track the number. The history is the
 `transit_events` audit trail read back out of MySQL. Sign for it. Sign again —
@@ -164,6 +171,39 @@ full-stack pages, recipient accounts so tracking is scoped to the owner, and
 swapping the courier portal's telemetry polling for the SSE stream.
 
 ---
+
+## Questions you are likely to get, and the answers
+
+Each of these was run against the live stack during the dry run, so the numbers
+are real rather than remembered.
+
+**"What stops someone bypassing your page and calling the API directly?"**
+Two things, and both were tried. With no session the API returns **401 — "Sign
+in to continue."** With a valid courier session, but aimed at a package that
+courier does not own, it returns **403 — "Only the assigned courier can update
+this package."** Authentication and authorisation are separate checks.
+
+**"Why does the cart show two different battery numbers?"**
+Because they are two different things, and this is worth saying before anyone
+notices it. The dropdown reads `vehicles.battery` in MySQL, the last value a
+courier reported. The telemetry panel reads the Node runtime, which simulates a
+live drain every two seconds. Expect them to differ by a few percent on screen.
+
+**"Why is 'At hub' listed twice in the timeline?"**
+`transit_events` is an audit log, not one row per status. A package is still at
+the hub when it is claimed, so the claim is its own event. The notes tell them
+apart: *"Received at central hub"* and *"Claimed by ECO-0417 · cart-01"*.
+
+**"What happens if two couriers claim the same package at once?"**
+`api/claims.php` opens a transaction and locks the cart and package rows with
+`SELECT ... FOR UPDATE` before it re-checks the battery, so the second request
+waits and then loses. One winner, decided by the database rather than by either
+browser.
+
+**"Why two backends instead of one?"**
+PHP and MySQL hold what must be durable and correct. The Node runtime holds what
+changes every two seconds and is worthless a minute later. A battery reading is
+not a record worth keeping.
 
 ## If something breaks
 
