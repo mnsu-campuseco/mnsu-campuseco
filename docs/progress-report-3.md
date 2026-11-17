@@ -11,9 +11,9 @@ MNSU-CampusEco | November 9, 2026
 | Course                   | CIS 483                                                                     |
 | Progress Report #        | 3                                                                           |
 | Phase                    | Phase 3 — Server Backends & Live Endpoints                                  |
-| Report date              | November 9, 2026                                                            |
-| GitHub repository link   | github.com/mnsu-campuseco/mnsu-campuseco                                    |
-| Checkpoint commit or tag | `phase-3`                                                                   |
+| Report date              | November 16, 2026                                                           |
+| GitHub repository link   | https://github.com/mnsu-campuseco/mnsu-campuseco                            |
+| Checkpoint commit or tag | `phase-3` (annotated tag at `03d371b`)                                      |
 
 The Phase 2 portals ran entirely in the browser: the dataset lived in
 `localStorage` and every business rule was a JavaScript check. Phase 3 moves the
@@ -27,6 +27,20 @@ landing page so the same three workflows can be compared with the rules in the
 browser and with the rules on the server.
 
 ## 2 Work completed this phase
+
+### Coverage of the four required Phase 3 tasks
+
+| Task from the project description                               | Where it is                                          | Status |
+| --------------------------------------------------------------- | ---------------------------------------------------- | ------ |
+| **3.1** Asynchronous AJAX engine & JSON protocols                | `js/angular-app.js` — every read and write is an `$http` call carrying JSON. The Phase 3 pages use no browser storage at all. | Done |
+| **3.2** Modern server-side runtimes & module engines (Node.js)   | `telemetry/server.js` — zero dependencies. Telemetry feed, parsed route streams, concurrent request handling, and a background dispatch-alert task. | Done |
+| **3.3** Client data binding model engines (AngularJS)            | AngularJS 1.8.3, module `campusEco`. `ng-model` two-way binding on every field, `ng-repeat` for the queues and logs, `ng-options` for server-supplied dropdowns. | Done |
+| **3.4** Relational storage engine and server execution (PHP)     | `api/*.php` over MySQL 8.0 — nine endpoints, prepared statements with emulation off, bcrypt password hashing, transactions, and eight normalised tables in `db/schema.sql`. | Done |
+
+All four were demonstrated live in Technical Presentation 2 on November 16.
+The detail of each is below.
+
+### Implementation detail
 
 | Item                             | What we implemented and source files                                                                                                                                                 | Status |
 | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ |
@@ -128,12 +142,24 @@ submission and correct anything that does not match.
 
 ## 5 Submission
 
-The Phase 3 implementation is complete and tagged `phase-3`. The **Phase 3
-In-Class Technical Presentation is Monday, November 16, 2026**, covering the four
-required components: the Angular frontend, the Node.js backend, the PHP backend
-server, and the relational database design and implementation.
+The Phase 3 implementation is complete and tagged `phase-3` at commit `03d371b`.
 
-Presentation materials are `docs/Presentation2.pptx` (13 slides) with a
-ten-minute walkthrough in `docs/demo-runbook.md`. One member submits this report,
-the presentation materials and the repository link through D2L. Setup
-instructions for a marker starting from an empty database are in the README.
+**Technical Presentation 2 was delivered in class on Monday, November 16, 2026.**
+All four required components were covered: the AngularJS frontend, the Node.js
+backend, the PHP backend server, and the relational database design and
+implementation. The middle of the presentation was a live demonstration against
+the running stack rather than slides — a package checked in, a duplicate
+tracking number refused by the database, a claim refused on a cart below the
+battery threshold and accepted on one above it, the delivery advanced through
+its milestones, and the recipient tracking and signing for it. All four
+presenters spoke; the speaking split is recorded in
+`docs/MNSU_CampusEco_Presentation_Parts.docx`.
+
+Presentation materials are `docs/Presentation2.pptx` (13 slides, speaker notes
+on all 13), with the ten-minute walkthrough and the question-and-answer
+preparation in `docs/demo-runbook.md`.
+
+One member submits this report, the presentation materials and the repository
+link through D2L. Setup instructions for a marker starting from an empty
+database are in the README, which also lists all four group members by full
+name as the project description requires.
