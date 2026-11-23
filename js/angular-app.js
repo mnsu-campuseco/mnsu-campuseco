@@ -117,7 +117,8 @@
     .factory('telemetry', [
       '$http',
       '$interval',
-      function ($http, $interval) {
+      '$rootScope',
+      function ($http, $interval, $rootScope) {
         return {
           carts: function () {
             return $http.get(TELEMETRY + '/telemetry/carts').then(function (r) {
@@ -139,6 +140,72 @@
             var handle = $interval(tick, everyMs || 4000);
             return function () {
               $interval.cancel(handle);
+            };
+          },
+
+          /**
+           * Subscribe to the server-sent-event stream instead of polling, and
+           * fall back to polling when the browser has no EventSource or the
+           * stream cannot be opened. Returns a cancel function either way, so
+           * the caller does not need to know which one it got.
+           *
+           * Polling asked "has anything changed?" every four seconds whether
+           * or not it had. The runtime already knows when a cart moves, so the
+           * stream lets it say so instead of being asked.
+           */
+          subscribe: function (onData) {
+            var self = this;
+
+            if (typeof window.EventSource !== 'function') {
+              return self.poll(4000, onData);
+            }
+
+            var source;
+            try {
+              source = new window.EventSource(TELEMETRY + '/telemetry/stream');
+            } catch (err) {
+              return self.poll(4000, onData);
+            }
+
+            var fallbackStop = null;
+
+            source.onmessage = function (event) {
+              var data;
+              try {
+                data = JSON.parse(event.data);
+              } catch (err) {
+                return; // a half-delivered frame is skipped, not fatal
+              }
+
+              // Older builds of the runtime streamed a bare array while the
+              // REST endpoint returned { ok, carts, threshold }. Normalising
+              // here means the caller reads one shape whichever it receives.
+              if (Array.isArray(data)) {
+                data = { ok: true, carts: data };
+              }
+
+              // EventSource fires outside AngularJS, so the digest has to be
+              // asked for explicitly or the view never repaints. $applyAsync
+              // coalesces bursts rather than throwing "$digest already in
+              // progress" when two frames land together.
+              $rootScope.$applyAsync(function () {
+                onData(data);
+              });
+            };
+
+            source.onerror = function () {
+              // The browser retries a dropped stream on its own, so only a
+              // stream that never opened is treated as unsupported.
+              if (source.readyState === window.EventSource.CLOSED && fallbackStop === null) {
+                fallbackStop = self.poll(4000, onData);
+              }
+            };
+
+            return function () {
+              source.close();
+              if (fallbackStop !== null) {
+                fallbackStop();
+              }
             };
           },
         };
@@ -300,8 +367,9 @@
             });
         };
 
-        // Live cart telemetry from the Node runtime.
-        var stop = telemetry.poll(4000, function (data) {
+        // Live cart telemetry, pushed from the Node runtime over server-sent
+        // events. Falls back to polling by itself if the stream is unavailable.
+        var stop = telemetry.subscribe(function (data) {
           $scope.live = data.carts;
         });
         $scope.$on('$destroy', stop);

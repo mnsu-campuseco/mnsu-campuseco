@@ -55,6 +55,20 @@ function snapshot() {
   }));
 }
 
+/**
+ * One frame of the server-sent-event stream.
+ *
+ * This deliberately matches what GET /telemetry/carts returns rather than
+ * sending a bare array. The stream used to send snapshot() on its own, so a
+ * client that read response.carts got undefined over the stream and a real
+ * list over the REST call — the same data in two shapes depending on how it
+ * arrived. One envelope for both transports means a caller can swap polling
+ * for the stream without changing how it reads the payload.
+ */
+function streamFrame() {
+  return { ok: true, carts: snapshot(), threshold: LOW_BATTERY };
+}
+
 function raiseAlert(cart, message, severity = 'info') {
   const alert = { id: alerts.length + 1, cart, message, severity, at: new Date().toISOString() };
   alerts.unshift(alert);
@@ -90,7 +104,7 @@ setInterval(() => {
     cart.updated = now;
   }
 
-  const payload = `data: ${JSON.stringify(snapshot())}\n\n`;
+  const payload = `data: ${JSON.stringify(streamFrame())}\n\n`;
   for (const client of streamClients) client.write(payload);
 }, 2000);
 
@@ -181,7 +195,7 @@ const server = http.createServer(async (req, res) => {
         Connection: 'keep-alive',
         'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
       });
-      res.write(`data: ${JSON.stringify(snapshot())}\n\n`);
+      res.write(`data: ${JSON.stringify(streamFrame())}\n\n`);
       streamClients.add(res);
       req.on('close', () => streamClients.delete(res));
       return;
