@@ -33,6 +33,51 @@
         <code>transit_events</code> audit trail, read straight from MySQL.
       </p>
 
+      <!-- Only rendered for a signed-in recipient. Tracking a single number
+           below stays public, so this panel adds a view rather than gating
+           anything that used to work without an account. -->
+      <section class="panel" ng-if="mine">
+        <h2>My packages</h2>
+
+        <div class="stats" aria-label="My package totals">
+          <div class="stat"><span class="stat-value">{{ mineTotals.total }}</span> addressed to me</div>
+          <div class="stat"><span class="stat-value">{{ mineTotals.at_hub }}</span> at hub</div>
+          <div class="stat"><span class="stat-value">{{ mineTotals.in_transit }}</span> in transit</div>
+          <div class="stat"><span class="stat-value">{{ mineTotals.delivered }}</span> delivered</div>
+        </div>
+
+        <table>
+          <caption>Packages addressed to my account, urgent first</caption>
+          <thead>
+            <tr>
+              <th scope="col">Tracking</th>
+              <th scope="col">Destination</th>
+              <th scope="col">Status</th>
+              <th scope="col">Signed</th>
+              <th scope="col"><span class="visually-hidden">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="p in mine">
+              <th scope="row">{{ p.tracking }}</th>
+              <td>{{ p.destination }}</td>
+              <td>
+                <span class="pill" ng-class="{ urgent: p.urgent }">{{ p.status }}</span>
+              </td>
+              <td>{{ p.receipt ? p.receipt.name : '—' }}</td>
+              <td>
+                <button type="button" ng-click="trackMine(p.tracking)">Track</button>
+              </td>
+            </tr>
+            <tr ng-if="!mine.length">
+              <td colspan="5">Nothing is addressed to your account yet.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p class="feedback error" ng-if="mineError" role="alert">{{ mineError }}</p>
+      </section>
+
       <div class="card-row">
         <section class="panel">
           <h2>Track a package</h2>

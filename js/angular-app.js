@@ -30,7 +30,12 @@
         }
         function problem(response) {
           var data = response.data || {};
-          throw new Error(data.error || 'The server could not be reached.');
+          var error = new Error(data.error || 'The server could not be reached.');
+          // Keep the HTTP status on the error. A caller sometimes needs to
+          // tell "you are not signed in" (401) or "not your role" (403) apart
+          // from a real failure, and the message alone cannot carry that.
+          error.status = response.status;
+          throw error;
         }
 
         return {
@@ -106,6 +111,10 @@
             return $http
               .get('../api/metrics.php', { params: tracking ? { tracking: tracking } : {} })
               .then(unwrap, problem);
+          },
+          /** The packages addressed to whoever is signed in. */
+          myPackages: function () {
+            return $http.get('../api/my-packages.php').then(unwrap, problem);
           },
         };
       },
@@ -217,8 +226,9 @@
      * ---------------------------------------------------------------- */
     .controller('AuthCtrl', [
       '$scope',
+      '$rootScope',
       'api',
-      function ($scope, api) {
+      function ($scope, $rootScope, api) {
         $scope.credentials = { username: '', password: '' };
         $scope.user = null;
         $scope.error = '';
@@ -236,7 +246,10 @@
             .then(function (res) {
               $scope.user = res.user;
               $scope.credentials.password = '';
-              $scope.$emit('campuseco:signedin', res.user);
+              // $broadcast from the root, not $emit: the portals that care
+              // are siblings of this controller, and an $emit only travels up
+              // its own parents, so a sibling would never hear it.
+              $rootScope.$broadcast('campuseco:signedin', res.user);
             })
             .catch(function (e) {
               $scope.error = e.message;
@@ -249,7 +262,7 @@
         $scope.signOut = function () {
           api.logout().then(function () {
             $scope.user = null;
-            $scope.$emit('campuseco:signedout');
+            $rootScope.$broadcast('campuseco:signedout');
           });
         };
       },
@@ -392,6 +405,62 @@
         $scope.metrics = null;
         $scope.error = '';
         $scope.message = '';
+
+        /* "My packages" is only meaningful for someone signed in, so the
+           panel stays hidden until the server says who they are. Tracking a
+           single number by hand still works signed out. */
+        $scope.mine = null;
+        $scope.mineTotals = null;
+        $scope.mineError = '';
+
+        function clearMine() {
+          $scope.mine = null;
+          $scope.mineTotals = null;
+          $scope.mineError = '';
+        }
+
+        $scope.loadMine = function () {
+          // Ask who is signed in before asking for their packages. Calling
+          // my-packages.php first and catching the 401 works, but it means
+          // every signed-out visit fires a request that is certain to be
+          // refused and logs a red line in the console for a page that is
+          // behaving correctly.
+          api
+            .me()
+            .then(function (res) {
+              if (!res.user || res.user.role !== 'enduser') {
+                clearMine();
+                return null;
+              }
+              return api.myPackages().then(function (mine) {
+                $scope.mine = mine.packages;
+                $scope.mineTotals = mine.totals;
+                $scope.mineError = '';
+              });
+            })
+            .catch(function (e) {
+              clearMine();
+              // A refusal here is a signed-out visitor, not a fault.
+              if (e.status !== 401 && e.status !== 403) {
+                $scope.mineError = e.message;
+              }
+            });
+        };
+
+        /** Track one of my own packages without retyping the number. */
+        $scope.trackMine = function (tracking) {
+          $scope.lookup.tracking = tracking;
+          $scope.track();
+        };
+
+        // AuthCtrl broadcasts from the root scope whenever the session
+        // changes, so the list follows signing in and out without a reload.
+        $scope.$on('campuseco:signedin', function () {
+          $scope.loadMine();
+        });
+        $scope.$on('campuseco:signedout', clearMine);
+
+        $scope.loadMine();
 
         $scope.track = function () {
           $scope.error = '';

@@ -158,6 +158,9 @@ function package_row(array $r): array
         'cart'        => $r['cart_id'],
         'distance'    => (float) $r['distance_km'],
         'created'     => $r['created_at'],
+        'recipient'   => isset($r['recipient_name']) && $r['recipient_name'] !== null
+            ? ['name' => $r['recipient_name'], 'username' => $r['recipient_username']]
+            : null,
         'receipt'     => isset($r['signed_name']) && $r['signed_name'] !== null
             ? ['name' => $r['signed_name'], 'at' => $r['signed_at']]
             : null,
@@ -168,7 +171,9 @@ function package_row(array $r): array
 const PACKAGE_SELECT = '
     SELECT p.package_id, p.tracking, p.weight, p.length_cm, p.width_cm, p.height_cm,
            d.name AS destination, p.urgent, p.status, p.courier_id, p.cart_id,
-           p.distance_km, p.created_at, r.signed_name, r.signed_at
+           p.distance_km, p.created_at, r.signed_name, r.signed_at,
+           p.recipient_id, u.full_name AS recipient_name, u.username AS recipient_username
       FROM packages p
       JOIN destinations d ON d.destination_id = p.destination_id
-      LEFT JOIN receipts r ON r.package_id = p.package_id';
+      LEFT JOIN receipts r ON r.package_id = p.package_id
+      LEFT JOIN users u ON u.user_id = p.recipient_id';

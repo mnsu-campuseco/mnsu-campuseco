@@ -123,6 +123,22 @@
                 </select>
               </div>
 
+              <div class="form-group">
+                <label for="recipient">Recipient account (optional)</label>
+                <!-- Username or email of a campus end-user. Left blank, the
+                     package has no recipient and behaves exactly as before. -->
+                <input
+                  id="recipient"
+                  type="text"
+                  ng-model="form.recipient"
+                  placeholder="student1"
+                />
+                <span class="hint">
+                  Links the package to an account so it appears in that
+                  person's own list. Leave blank if the recipient is unknown.
+                </span>
+              </div>
+
               <label class="choice">
                 <input type="checkbox" ng-model="form.urgent" /> Urgent priority
               </label>

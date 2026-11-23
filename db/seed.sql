@@ -45,21 +45,30 @@ INSERT INTO couriers (courier_id, cart_id) VALUES
   ('ECO-0417', 'cart-02');
 
 -- Three demo packages at three different stages of the journey.
+--
+-- Two of them are addressed to student1 so the "My packages" list on the
+-- end-user portal has something in it. The sub-select resolves to NULL when
+-- api/seed-users.php has not been run yet, and recipient_id is nullable, so
+-- loading this file before the accounts exist still works — the packages
+-- simply have no recipient.
 INSERT INTO packages
   (tracking, weight, length_cm, width_cm, height_cm, destination_id, urgent,
-   status, courier_id, cart_id, distance_km, created_at)
+   status, courier_id, cart_id, distance_km, created_at, recipient_id)
 VALUES
   ('CE-20261001', 4.2, 12, 8, 6,
    (SELECT destination_id FROM destinations WHERE name = 'Julia Sears Hall — Array A'),
-   1, 'En Route',  'ECO-0417', 'cart-02', 2.00, NOW() - INTERVAL 3 HOUR),
+   1, 'En Route',  'ECO-0417', 'cart-02', 2.00, NOW() - INTERVAL 3 HOUR,
+   (SELECT user_id FROM users WHERE username = 'student1')),
 
   ('CE-20261002', 4.2, 12, 8, 6,
    (SELECT destination_id FROM destinations WHERE name = 'Memorial Library — Array A'),
-   0, 'Delivered', 'ECO-0417', 'cart-02', 2.00, NOW() - INTERVAL 5 HOUR),
+   0, 'Delivered', 'ECO-0417', 'cart-02', 2.00, NOW() - INTERVAL 5 HOUR,
+   (SELECT user_id FROM users WHERE username = 'student1')),
 
   ('CE-20261003', 4.2, 12, 8, 6,
    (SELECT destination_id FROM destinations WHERE name = 'Centennial Student Union — Array A'),
-   0, 'At hub',    NULL,       NULL,      2.00, NOW() - INTERVAL 1 HOUR);
+   0, 'At hub',    NULL,       NULL,      2.00, NOW() - INTERVAL 1 HOUR,
+   NULL);
 
 -- Transit history. Every status change a package has been through is a row here,
 -- which is what the end-user tracking timeline reads.

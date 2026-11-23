@@ -96,6 +96,27 @@ if ($destinationId === false) {
     fail('Select a campus destination.');
 }
 
+/* Optional recipient. A package with no recipient still works exactly as it
+   did before — the column is nullable and everything that reads it copes with
+   null — so naming one is an addition rather than a new requirement. */
+$recipientId = null;
+$recipient   = trim((string) ($in['recipient'] ?? ''));
+
+if ($recipient !== '') {
+    // Accept either the username or the email, so an operator does not have to
+    // remember which one the recipient signs in with.
+    $lookup = db()->prepare(
+        'SELECT user_id FROM users WHERE (username = ? OR email = ?) AND role = ?'
+    );
+    $lookup->execute([$recipient, $recipient, 'enduser']);
+    $found = $lookup->fetchColumn();
+
+    if ($found === false) {
+        fail('No campus end-user account matches "' . $recipient . '".');
+    }
+    $recipientId = (int) $found;
+}
+
 $pdo = db();
 try {
     $pdo->beginTransaction();
@@ -103,12 +124,12 @@ try {
     $insert = $pdo->prepare(
         'INSERT INTO packages
             (tracking, weight, length_cm, width_cm, height_cm,
-             destination_id, urgent, status, distance_km, checked_in_by)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+             destination_id, urgent, status, distance_km, checked_in_by, recipient_id)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
     );
     $insert->execute([
         $tracking, $weight, $length, $width, $height,
-        (int) $destinationId, $urgent, 'At hub', 2.00, $user['user_id'],
+        (int) $destinationId, $urgent, 'At hub', 2.00, $user['user_id'], $recipientId,
     ]);
 
     $packageId = (int) $pdo->lastInsertId();
