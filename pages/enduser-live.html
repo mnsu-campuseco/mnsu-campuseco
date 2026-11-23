@@ -33,9 +33,41 @@
         <code>transit_events</code> audit trail, read straight from MySQL.
       </p>
 
-      <!-- Only rendered for a signed-in recipient. Tracking a single number
-           below stays public, so this panel adds a view rather than gating
-           anything that used to work without an account. -->
+      <!-- Signing in is optional on this page. Tracking a single number works
+           without an account, which is the point of track.php being public;
+           an account only adds the "My packages" list below. -->
+      <section class="panel" ng-controller="AuthCtrl">
+        <h2>Sign in</h2>
+
+        <div ng-if="user">
+          <p>
+            Signed in as <strong>{{ user.full_name }}</strong>
+            <span class="pill">{{ user.role }}</span>
+          </p>
+          <button type="button" ng-click="signOut()">Sign out</button>
+        </div>
+
+        <form ng-submit="signIn()" ng-if="!user" novalidate>
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input id="username" type="text" ng-model="credentials.username" required />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input id="password" type="password" ng-model="credentials.password" required />
+          </div>
+          <button type="submit" ng-disabled="busy">
+            {{ busy ? 'Signing in…' : 'Sign in' }}
+          </button>
+          <p class="feedback error" ng-if="error" role="alert">{{ error }}</p>
+          <p class="hint">
+            Optional. Tracking a number works signed out. Demo account:
+            <code>student1</code> / <code>CampusEco2026</code>
+          </p>
+        </form>
+      </section>
+
+      <!-- Only rendered for a signed-in recipient. -->
       <section class="panel" ng-if="mine">
         <h2>My packages</h2>
 

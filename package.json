@@ -9,6 +9,7 @@
     "db:reset": "node tools/reset-db.cjs",
     "test": "node --test tests/models.test.cjs",
     "test:browser": "playwright test",
+    "test:browser:phase3": "playwright test --config=playwright.phase3.config.cjs",
     "test:stack": "node tools/smoke-test.cjs"
   },
   "devDependencies": {
